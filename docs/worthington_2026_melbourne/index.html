@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Load piecedata.js. Scripts in body will fail gracefully if not loaded  -->
+  <script src="piecedata.js"></script>
+  
+  <!-- Find location of TouchViewer and set up tvLoc  -->
+  <script>isHere=0;</script>
+  <script src="TouchViewer/loctest.js"></script>
+  <script>isInside=isHere;isHere=0;</script>
+  <script src="../TouchViewer/loctest.js"></script>
+  <script>
+    isOutside=isHere;
+    if (isInside==1){                // Inside
+      tvLoc='TouchViewer/';
+    }else if (isOutside==1){        // Outside
+      tvLoc='../TouchViewer/';
+    }else{                          // Not Found
+      tvLoc='';
+    }
+	
+  </script>
+  <link rel="stylesheet" type="text/css" href="TouchViewer/HawkEar.css">
+  <link rel="stylesheet" type="text/css" href="../TouchViewer/HawkEar.css">
+  <link rel="icon" type="image/png" href="../hk4.png" id="myfavicon">
+  <meta http-equiv=Content-Type content="text/html; charset=windows-1252"/>
+  <meta content="bell,ringing,Bellringing,Bellringers,Bells,campanology,HawkEar" name="keywords"/>
+  <style>
+    .tv {
+      position: relative;
+      top: 4px;
+    }
+  </style>	
+</head>
+<body id="mybody" style="display:none">
+  <div class="headingblock">
+    <h2 id="RingingnameLengthMethod" style="margin-bottom:0px; margin-top:3px"></h2>
+    <h3 id="Association" style="margin-bottom:0px; margin-top:0px"></h3>
+    <h3 id="TowerDateTimeDuration" style="margin-top:0px; margin-bottom:0px"></h3>
+    <table  style="float: left; border-spacing:15px 2px;"><tr>
+      <td class="viewselectorN" id="RHicon"><div class="tooltip" onclick="evtViewChange('RH')"><img src="iconstriking.png" alt="Ringer Home" class="tv vsicons"><span class="tooltiptext">Ringer Home</span></div></td>
+      <td class="viewselectorN" id="COicon"><div class="tooltip" onclick="evtViewChange('CO')"><img src="iconcompass.png" alt="Compass" class="tv vsicons"><span class="tooltiptext">Compass</span></div></td>
+      <td class="viewselectorN" id="EHicon"><div class="tooltip" onclick="evtViewChange('EH')"><img src="iconhistogram.png" alt="Error Histogram" class="tv vsicons"><span class="tooltiptext">Error Histogram</span></div></td>
+      <td class="viewselectorN" id="REicon"><div class="tooltip" onclick="evtViewChange('RE')"><img src="iconbarchart.png" alt="Ringer Errors" class="tv vsicons"><span class="tooltiptext">Individual Bell Errors</span></div></td>
+      <td class="viewselectorN" id="JHicon"><div class="tooltip" onclick="evtViewChange('JH')"><img src="iconcontest.png" alt="Judge Home" class="tv vsicons"><span class="tooltiptext">Judge Home</span></div></td>
+      <td class="viewselectorN" id="SHicon"><div class="tooltip" onclick="evtViewChange('SH')"><img src="iconstats.png" alt="Statistician Home" class="tv vsicons"><span class="tooltiptext">Statistician Home</span></div></td>
+      <td class="viewselectorN" id="DOicon"><div class="tooltip" onclick="evtViewChange('DO')"><img src="icondownloads.png" alt="Downloads" class="tv vsicons"><span class="tooltiptext">Files for Download</span></div></td>
+      <td class="viewselectorN" id="TEicon"><div class="tooltip" onclick="evtViewChange('TE')"><img src="icontechnical.png" alt="Technical" class="tv vsicons"><span class="tooltiptext">Technical Information</span></div></td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td class="viewselectorN"><a href="../index.html"><div class="tooltip"><img src="icontouchindex2.png" alt="TouchIndex" class="tv vsicons"><span class="tooltiptext">Index of Touches</span></div></a></td>
+    </tr></table>
+	<div id="Expstring" style="float: right; margin-right:10px; "></div>
+  </div>
+  <!-- ------------------------- Judges ----------------------------------------- -->
+  <div class="detailblock" id="RJ" style="display:none;" >
+  <div class="detailblock2 sc0".                                                                                                      
+    <span style="float: none; white-space: pre; line-height: 1.2; ">JUDGESREPORT</span>                                               
+  </div>                                                                                                                              
+  </div>
+  <!-- --------------------------- RM Ringer errors tab --------------------------- -->
+  <div class="detailblock" id="RE" style="display:none">
+    <div class="detailblock2">
+      <h2>Ringer errors</h2>
+      <div style="float:left; padding-right:3%; width:100%">
+        <a href="ErrorsByBell.png">
+	       <img src="ErrorsByBell.png" alt="RMS Error By Bell" style="width:100%">
+	     </a>
+      </div>
+      <p>Shows how the band as a whole rang when ringing in a given position or following other bells. When ringing in a given position shows for example whether the band is weak at lead or whether they are habitually late at backstroke in last place.  For following other bells, shows how the band as a whole is affected by bells other than the one each is ringing. Might indicate "fear of the bells", or perhaps that the band is distracted by a ringer's handling style.</p>
+      <div style="float:left; padding-right:180px"; >
+        <h4>Whole Band ringing in given position</h4>
+        <div id=Meanbandinpos>?</div>
+      </div>
+      <div style="float:left; padding-right:40px">
+        <h4>Whole Band ringing after other bell</h4>
+        <div id=Meanbandafterbell>?</div>
+      </div>
+      <div style="clear:both; padding-bottom:50px"></div>
+      <h3>Bell Error Tables</h3>
+      <p>Shows how each bell rang. There are eight tables covering all combinations of:</p><ul><li>Handstroke and backstroke<li>Mean (i.e. average error) and standard deviation (i.e. amount of randomness)<li>Bell-after-bell and Bell-in-position</ul><p>Perfect ringing would have zeros in all squares of the tables. Each square is the mean or standard deviation of multiple individual striking errors and where there are fewer than five occurrences the square is marked grey as the value may not be a statistically significant indicator of striking faults. Otherwise pink highlights negative values and orange positive values, and the darker the colour the worse the error. </p><p>If the touch contains rows with errors above the threshold the rows containing the errors are ignored for the purpose of these tables. This improves the likelihood that the dark coloured cells reflect striking faults even when there are method errors which would otherwise make the numbers meaningless. The row(s) of this touch that were ignored were: &nbsp .</p>
+	  <div>                                                                                                      
+        <span style="float: none; white-space: pre; line-height: 1.2; ">IGNOREDROWS</span>                                               
+      </div>                                                                                                                              
+
+      <div style="float:left; padding-right:40px">
+        <h4>Mean error (ms) Bell-after-bell at Handstroke</h4>
+        <div id=Meanbellafterbellhs>?</div>
+      </div>
+      <div style="float:left; padding-right:40px">
+        <h4>Mean error (ms) Bell-after-bell at Backstroke</h4>
+        <div id=Meanbellafterbellbs>?</div>
+      </div>
+      <div style="clear:both; padding-bottom:10px"></div>
+      <div style="float:left; padding-right:40px">
+        <h4>Mean error (ms) Bell-in-position at Handstroke</h4>
+        <div id=Meanbellinposhs>?</div>
+      </div>
+      <div style="float:left; padding-right:40px">
+        <h4>Mean error (ms) Bell-in-position at Backstroke</h4>
+        <div id=Meanbellinposbs>?</div>
+      </div>
+      <div style="clear:both; padding-bottom:50px"></div>
+      <div style="float:left; padding-right:40px">
+        <h4>Std error (ms) Bell-after-bell at Handstroke</h4>
+        <div id=Stdbellafterbellhs>?</div>
+      </div>
+      <div style="float:left; padding-right:40px">
+        <h4>Std error (ms) Bell-after-bell at Backstroke</h4>
+        <div id=Stdbellafterbellbs>?</div>
+      </div>
+      <div style="clear:both; padding-bottom:10px"></div>
+      <div style="float:left; padding-right:40px">
+        <h4>Std error (ms) Bell-in-position at Handstroke</h4>
+        <div id=Stdbellinposhs>?</div>
+      </div>
+      <div style="float:left; padding-right:40px">                                                                                    
+        <h4>Std error (ms) Bell-in-position at Backstroke</h4>                                                                       	 
+        <div id=Stdbellinposbs>?</div>
+      </div>  
+    </div>
+  </div>
+  <div style="clear:both;padding-top:50px;padding-bottom:0px"></div>
+  <div style="float: none; padding-top:0px; white-space: pre; line-height: 1; background: #FFFFFF; "></div>
+  <!----------------------------- RM Errors by time tab ----------------------------->
+  <div class="detailblock" id="CO" style="display:none">
+  <div class="detailblock2">
+      <h2>Compass</h2>
+      <p>The overall experience of listening to and ringing of a touch is determined by what contest judges often refer to as its "compass", i.e. something related to how well the band rang that is distinct from a count of striking errors in individual blows. Compass has not been mathematically defined but it seems likely to be related to stability of the rhythm. The graphs here are an experimental effort to understand it better by showing how the basic elements of rhythm (speed and handstroke uplift) vary through a piece of ringing and may correlate with other factors such as distance from rounds and amount of random errors.</p>
+      <h3>What is Handstroke Uplift?</h3>
+      <p>In open handstroke ringing the audible rhythm is a repeating cycle of (hopefully) even gaps and one bigger gap. This rhythm is created by all ringers leaving more time from backstroke to handstroke than from handstroke to backstroke. It is emphatically NOT created by the bell leading at hand leaving a handstroke gap over the last bell at backstroke and everyone else following (which is how it is sometimes explained), because that would require us to be ringing by ropesight. Leaving more time requires the <b>handstroke to be lifted or held up on every stroke whether leading or not hence the term Handstroke Uplift.</b> The handstroke gap is the audible consequence of handstroke uplift.</p> 
+      <h3>What is “Distance from Rounds”?</h3> 
+      <p>This is a graph indicating by a number between 0 and 1 indicating how the bells are distributed in the change. Zero occurs when the bells are in rounds and one when in backrounds. Around .5 occurs when the bells are most mixed up. It is included because it has been noticed that in a lot of 12-bell ringing handstroke uplift varies significantly through the ringing and the variation correlates with this measure. Given that, oddstruckness aside, big bells naturally swing with little uplift and due to the weight of the rope small bells naturally ring with large uplift an explanation may be that the bells at the front of the change tend to impose their natural uplift on the ringing, however there is no direct evidence to support this theory.</p>
+      <h3>What is "Amount of Random Error"?</h3> 
+	  <p>The inaccuracy in the timing of a blow is decided by how far (in time) it is from what the model expected. These inaccuracies are accumulated for all blows in the row using a statistical technique called Standard Deviation. As it's a measure of the error low numbers are better. When used on good ringing the Standard Deviation is in the range 30-40 milliseconds.</p><br>	  
+	  <p><i>The numbers on the horizontal axes are row numbers and the touch is indicated by the thick line.</i></p>
+	  <a href="Compass.png">
+	    <img src="Compass.png" alt="Compass" style="width:100%">
+	  </a>
+  </div>
+  </div>
+  <!----------------------------- RM Errors Histogram tab ----------------------------->
+  <div class="detailblock" id="EH" style="display:none">
+  <div class="detailblock2">
+    <h2>Error Histogram</h2>
+      <p>This graph shows the number of errors(*) of different sizes. The peak or "median" value represents the "everything going right" capability of the band.</p>
+      <p>The shape of the histogram should be roughly that of a bell with its mouth down but method or ropesight errors cause the curve to be lop-sided on the right. If this happens the reported Standard Deviation for the touch will be higher than the median and the difference between the two shows the disruptive effect of such errors.</p>
+      <p>When working on improving the overall standard of striking in the band, recording the median standard deviation of each touch is a good way of monitoring overall progress.</p>
+      <p>----------<br>(*) measured as the standard deviation from the ideal according to the Contest model</p>
+	  <a href="StdHist.png">
+	     <img src="StdHist.png" alt="SD histogram" style="width:50%">
+	  </a>
+  </div>
+  </div>
+  <!----------------------------- Downloads tab ----------------------------->
+  <div class="detailblock" id="DO" style="display:none">
+  <div class="detailblock2">
+    <h2>Downloadable Resources</h2>
+	<ul>
+	<li><a href="TOUCHID.ro.txt" download>List of Changerows</a><br>
+	<li><a href="TOUCHID.rf.txt" download>List of Changerows after correcting for method errors</a><br>
+	<li><a href="TOUCHID.lo.txt" download>Strike data in Lowndes format, e.g. "H 1 0X0000"</a><br>
+	<li><a href="TOUCHID.bl.csv" download>Strike data and ideal times in CSV format</a><br>
+	<li><a href="TOUCHID.su.txt" download>Bell Summary</a><br>
+	<li><a href="TOUCHID.mp3"    download>Recording of ringing (if available)</a><br>
+	</ul>
+  </div>
+  </div>
+  <!----------------------------- Technical tab ----------------------------->
+  <div class="detailblock" id="TE" style="display:none">
+  <div class="detailblock2">
+    <br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Touch Id               = TOUCHID</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Training Data Recorded = TRAINDATARECORDEDON</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Training Data levels   = TDATALEV</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Trained on             = TRAINEDON</span>
+    <br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Source filename        = SOURCEFILENAME</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Recording level (dB)   = TOUCHDB</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Transcription options  = TOPTIONS</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Analysis options       = AOPTIONS</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Code Versions          = VERSIONS</span>
+	<p>&nbsp;
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Association            = ASSOCIATION</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Calling                = CALLING</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">CompositionName        = COMPOSITIONNAME</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Footnotes              = FOOTNOTES</span>
+	<br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">Ringers                = RINGERS</span>
+	<p>&nbsp;
+    <br><span class=sc0 style="float: none; white-space: pre; line-height: 1.2; ">QUALITY</span>
+
+  </div>
+  </div>
+  <!----------------------------- Ringer and Statistician Views ----------------------------->
+  <div class="detailblock" id="SG" style="display:none; margin:0px; padding:0px;">
+	
+    <span style="font-size:14px; height:26px; white-space:nowrap;">
+      <div class="helptip">
+        Num:<span class="helptiptext">Cycles through the different ways of numbering the rows:<br>(P) row number in piece<br>(T) row number in touch<br>(B) blow number. </span>
+		<button id="rntype"         style="height:26px; margin-right:10px; padding:0px; margin-left:5px; width:26px;"></button>
+	  </div>
+      <div class="helptip">
+	    Bell:<span class="helptiptext">Select a bell to:
+		<ul>
+		<li/>Summarise its striking in the lower right box
+        <li/>Highlight its path on the striking graph
+		<li/>Reveal its deviations from the selected ideal line graphically on the right of the graph.
+		</ul>
+		Striking graph colours show whether each blow is quick or slow:
+		<ul>
+		<li/>Blue. Blow was late
+		<li/>Orange. Blow was early
+		<li/>Green. Blow was within a gnats whisker (20ms) of being correct.
+		</ul>
+		Colour intensity:
+		<ul>
+		<li/>Above 20ms more intense means bigger deviation from ideal. 
+		<li/>Below 20ms more intense means smaller deviation.
+		</ul>
+		</span>
+        <select id="bnselector"     style="height:26px; margin-right:10px; padding:0px;"></select>
+	  </div>
+      <div class="helptip">
+        Ideal-line:<span class="helptiptext">Select different "models" of good ringing:<br><b>Contest model.</b> Adapts quickly to the speed and handstroke uplift of the ringing. Used for judging the National 12-bell Contest. <br><b>HawkEar model.</b> Adapts more slowly to ringing speed changes and uses a fixed (specifiable) Handstroke Uplift ratio. May give a fairer analysis of individual bells. <br><b>RWP model.</b> Developed by the late Rod Pipe it uses an estimate based on the whole touch of Handstroke Uplift but responds quickly to speed changes. <br><b> Metronomic model</b> Assumes the first and last blows are correct and uses that to decide where all other blows should have struck. Useful as an occasional reminder of by how much real ringing deviates from "perfect" metronomic ringing (but not much else!)</span>
+		<select id="modelselector"  style="height:26px; margin-right:10px; padding:0px;"></select>
+	  </div>
+      <div class="helptip">
+        Range:<span class="helptiptext">Select the portion of ringing to be analysed</span>     
+		<select id="rangeselector"  style="height:26px; margin-right:10px; padding:0px;"></select>
+	  </div>
+      <div class="helptip">
+        Rows:<span class="helptiptext">Select the range of rows of ringing to be analysed</span>      
+		<input  id="range" size="6" style="height:22px; margin-right:10px; padding:0px;"/>
+	  </div>
+
+       <div class="helptip" id="audiocontrols" style="visibility:hidden;">
+	     <span class="helptiptext">Controls playback of the recording of the ringing. Step backwards and forwards through the ringing two rows at a time. Start and pause playback. Set the volume.</span>
+         <span style="font-size:20px; margin-top:2px; margin-right:5px; width:280px; border-style:solid; border-width:1px; border-color:grey; background:pink; padding-top:0px; padding-bottom:3px; padding-left:3px; ">
+          <img src="iconback.png" id="ppback"       style="width:20px; height:20px;" class="tv"/>
+          <img src="iconplay.png" id="pp"           style=" width:20px; height:20px;" class="tv"/>
+          <img src="iconforward.png" id="ppforward" style=" width:20px; height:20px;" class="tv"/>
+	      <span id="ppposition" style="font-size:14px;">00:00&nbsp;/&nbsp;00:00</span>
+          <img src="iconspeaker.png" id="ppspeaker" style= "width:20px; height:20px;" class="tv"/>
+          <input id="ppvolume" type="range" min="0" max="1" step="0.01" value="0" style="width:100px; height:20px;" class="tv"/>
+        </span>
+	  </div>
+	</span>
+    <audio  id="myAudio" >Sorry, Audio is not supported by your browser</audio>
+	<div  style="z-index:1;" id="strikinggraph" class="strikinggraph">
+      <svg id="mysvg"> </svg>
+	</div>
+	<div id="eye" style="z-index:2; position:absolute; top:45px; right:47%; display:none">
+	  <img src="iconeye.png"  class="tv" onclick="EyeCtl()"/>
+	</div>
+
+    <div class="rhs" id="RV" style="display:inline">
+      <table id="rvall" class="rhsXXX" >
+        <tr>
+		  <th colspan="2">Striking summary for the band<span id="selrow"></span></th>
+		</tr>
+      </table>
+      <table id="rvbel" class="rhsXXX" >
+        <tr>
+		  <th colspan="2">Striking summary for ringer of <span id="rvbellno"></span> </th> 
+		</tr>
+      </table>
+    </div>
+	
+    <div class="rhs" id="SV" style="display:none">
+      <h3 align="center" style="margin-top:6px; margin-bottom:0px; " >
+        <div class="helptip">
+	      <img src="iconderive.png" alt="[derivation]" class="tv helpiconclass">
+          <span id=helpidZZZZZZ class="helptiptext">Contest Model: adjusts quickly to speed of ringing enabling and Handstroke Gap allowed to vary over the touch. Error scoring matches what is audible, for contests. HawkEar model: Adjusts slowly to speed of ringing and Handstroke gap of model is fixed.  Errors per bell are good measure of individual ringer, for learning. RWP model: provided for historical reasons. Metronomic model. Shows difference between actual and perfect ringing</span>
+        </div>
+        <div class="helptip">
+	      <img src="iconlearn.png" alt="[learn]" class="tv helpiconclass">
+          <span id=helpidZZZZZZ class="helptiptext">Bellringing judges normally count audible clips and gaps to score ringing, however computer models smooth out timing errors (in different ways according to the model) which gives an "ideal" time for each blow. The differences between the actual and ideal times are assumed to be errors, and the average error (mathematically the RMS error) is a measure of the quality of ringing.  This method of defining errors has the advantage that it allows the error to be attributed to a specific bell, making it more useful than clips and gaps for learning and measuring progress.</span>
+        </div>
+        <span>Statistics from </span><span id="rhsmodel">MMMMMM</span>
+       </h3>
+      <table id="all" class="rhsXXX" >
+        <tr>
+		  <th>All bells</th>
+		  <th align=left>Both</th>
+		  <th align=left>Hand</th>
+		  <th align=left>Back</th>
+		</tr>
+      </table>
+      <table id="bel" class="rhsXXX" >
+        <tr>
+		  <th>Bell: <span id="svbellno">(none)</span></th>
+		  <th align=left>Both</th>
+		  <th align=left>Hand</th>
+		  <th align=left>Back</th>
+		</tr>
+      </table>
+      <table id="row" class="rhsXXX" >
+        <tr>
+		  <th colspan="2">Listening and Judging<span id="selrow"></span></th>
+		</tr>
+      </table>
+    </div>
+  </div>
+<script>
+  // Check everything is OK before launching TouchViewer
+  if (typeof tiActByRb === 'undefined') { // Strike data loaded successfully?
+    mybody.innerHTML = 'HAWKEAR ERROR: Strike data not found';
+    mybody.style.display = "block";               // Display the main page
+	isFailed=1;
+  } else if (tvLoc == '') { // TouchViewer found in at least one of the supported locations?
+    mybody.innerHTML = 'HAWKEAR ERROR: TouchViewer Not Found';
+    mybody.style.display = "block";               // Display the main page
+	isFailed=1;
+  } else{
+    mybody.style.display = "block";               // Display the main page
+    isFailed = 0;
+
+	// Load Touch Explorer
+    var first = document.getElementsByTagName('script')[0];
+    newScript = document.createElement('script');
+    newScript.src = tvLoc+'loader.js';
+    first.parentNode.insertBefore(newScript, first);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+/******************** defaults ***************************/
+html, body, div, p {
+	padding:0px;  /* Inside of border */
+	margin:0px; /* Outside of border */
+	font:12px/1.4 Arial, sans-serif;
+} 
+h4 {text-align: center}
+body {
+	background:#f4e8ff /*Theme*/
+}
+.sc0 { /* For text-formatted output (judge summary and tranqual) */
+	  font-family: "Courier New";
+	  font-size: 11pt;
+	  color: #000000; 
+	  float: none; 
+	  white-space: pre; 
+	  line-height: 1; 
+	  background: #FFFFFF; 
+}
+
+.headingblock {
+  margin: 2px;
+  border-style:solid;
+  border-width:2px;
+  border-color:grey; /*Theme*/
+  background-color:#afa;  /*Theme*/
+  height:80px;
+}
+.detailblock  {
+  border-style:solid;
+  border-width:2px;
+  border-color:grey; /*Theme*/
+  background-color: #faa;  /*Theme*/
+  position:fixed;
+  top:90px; /* or whatever the header height is */
+  right:2px;
+  bottom:2px;
+  left:2px;
+}
+.detailblock2  {
+  position:absolute;
+  top:04px; 
+  bottom:04px;
+  left:04px;
+  right:04px;
+  overflow-y: auto;
+  overflow-x: auto;    
+  border-style:solid;
+  border-width:2px;
+  border-color:grey; /*Theme*/
+  background-color: #fff;  /*Theme*/
+}
+.pn {
+  font-size: 9px;
+}
+.pnbad {
+  font-size: 10px;
+  fill: red;
+}
+.nopointerevents { /* Not sure which of these lines is necessary) */
+    pointer-events: none;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */      
+}
+.sgselected {stroke-width:1.5; stroke:black; fill:none; }
+
+.strikinggraph {  
+    font-size:11.3px; /*27px seems to result in scrolling by 1 line */
+    /*font-size:20px; /*27px seems to result in scrolling by 1 line */
+    position:absolute;
+    top:40px; 
+    bottom:04px;
+    left:04px;
+    right:45.3%; /* SGR controls amount of unused space on the right of graph */
+ 	overflow-y: auto;
+    overflow-x: auto;
+  border-style:solid;
+  border-width:2px;
+  border-color:grey; /*Theme*/
+  background-color: #fff;  /*Theme*/
+} 
+.rhs {
+  position:absolute;
+  top:40px; 
+  left:55%; /* RHSL Controls amount of unused space on left of rhs */
+  bottom:04px;
+  right:04px;
+  overflow-y: auto;
+  overflow-x: auto;    
+  border-style:solid;
+  border-width:2px;
+  border-color:grey; /*Theme*/
+  background-color: #fff;  /*Theme*/
+}
+/* SGR + RHSL = 100.3 */
+/******************* RHS of striking Graph *****************/
+.rhsXXX{ /* This applies to all RHS tables */
+	border:2px solid #008888; /*Theme*/
+	padding:2px;
+	margin:10px 5px;
+}
+img.helpiconclass {
+	height:14px;
+	width:14px;
+}
+
+/**************** View selector buttons **********************/
+.viewselectorS {
+	border:1px solid #F00; /*Theme*/
+}
+.viewselectorN {
+	border:1px solid #008888; /*Theme*/
+}
+.vsicons {
+	height:18px;
+	width:18px;
+}
+
+/************** view selector popup descriptions ************/
+.tooltip {
+  position:relative;
+  display:inline-block;
+}
+.tooltip:hover .tooltiptext {
+  visibility:visible;
+}
+ .tooltiptext {
+	margin:0px;
+  visibility:hidden;
+  width:80px;
+  background:#EED8F0; /*Theme*/
+  color:#000; /*Theme*/
+  text-align:center;
+  border-radius:15px;
+  padding:6px 6px;
+  position:absolute;
+  bottom:20px;
+  z-index:3;
+}
+
+/************** popup help for statistics ************/
+.helptip {
+  position:relative;
+  display:inline-block;
+}
+.helptip:hover .helptiptext {
+  visibility:visible;
+}
+.helptiptext {
+  white-space:normal;
+  visibility:hidden;
+  width:230px;
+  background:#EED8F0; /*Theme*/
+  color:#000; /*Theme*/
+  text-align:left;
+  border-radius:6px;
+  padding:6px 6px;
+  /* Position the helptip */
+  position:absolute;
+  top:30px;
+  z-index:3;
+}
+
+/***************** bell-bell tables *******************/
+table.bb { border-collapse:collapse; }
+table.bb, th.bb, td.bb { border:1px solid #D0D0D0; } /*Theme*/
+th.rotate {
+    -moz-transform:rotate(-90deg);  /* FF3.5+ */
+	-o-transform:rotate(-90deg);  /* Opera 10.5 */
+	-webkit-transform:rotate(-90deg);  /* Saf3.1+, Chrome */
+}
+table.bb td { text-align:right; font-size:12px;  width:25px; padding:2px }
+table.bb th { text-align:center; font-size:14px;  width:25px; padding:2px }
+td.cell_more_80 { background-color:#FF5050; }
+td.cell_79_60   { background-color:#FF6262; }
+td.cell_59_40   { background-color:#FF8484; }
+td.cell_39_30   { background-color:#FFA8A8; }
+td.cell_29_20   { background-color:#FFCACA; }
+td.cell_19_10   { background-color:#FFEEEE; }
+td.cell_9_9     { background-color:#FFFFFF; }
+td.cell_10_19   { background-color:#FFF5EB; }
+td.cell_20_29   { background-color:#FFE0C2; }
+td.cell_30_39   { background-color:#FFCC99; }
+td.cell_40_59   { background-color:#FFB870; }
+td.cell_60_79   { background-color:#FFA347; }
+td.cell_80_more { background-color:#FF9933; }
+td.cell_na      { background-color:#888888; }
+td.cell_nss     { background-color:#EEEEEE; }
+table.ri { border-collapse:collapse; border:none; }
+th.ri { width:20px; border:none; }
+td.bn { width:30px; text-align:left; border:none; }
+td.ri { width:200px; text-align:left; border:none; }
+
