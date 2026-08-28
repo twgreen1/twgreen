@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+<script src="Leaflet.geoCSV-master/leaflet.geocsv.js"></script>
+
+<style>
+    body {
+    padding: 0;
+    margin-left: 25vw;
+}
+html, body, #map {
+    height: 100%;
+    width: 50vw;
+   
+}
+</style>
+<title>NUSCR Ducks</title>
+</head>
+<body>    
+<div id="map">
+<script>
+var map = L.map('map').setView([52.96018, -1.16152], 10);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; OpenStreetMap'}).addTo(map);
+
+var duckGeneral = L.icon({
+    iconUrl: 'rubber-156597-2.svg',
+    iconSize: [38,80],
+    shadowSize: [50, 64],
+    iconAnchor: [19,75],
+    shadowAnchor: [4, 62],
+    popupAnchor: [-3,-76]
+})
+
+var duckAllSaints = L.icon({
+    iconUrl: 'rubber-156597.svg',
+    iconSize: [38,80],
+    shadowSize: [50, 64],
+    iconAnchor: [19,75],
+    shadowAnchor: [4, 62],
+    popupAnchor: [-3,-76]
+})
+
+fetch("nuscr_ducks.csv")
+    .then(response => response.text())
+    .then(csvContents => {
+
+        var allSaintsMarker;
+        var geoLayer = L.geoCsv(csvContents, {
+            fieldSeparator: ',',
+            firstLineTitles: true,
+            latitudeTitle: 'lat',
+            longitudeTitle: 'lng',
+
+            pointToLayer: function (feature, latlng) {
+                if(feature.properties.name === 'Nottingham' && feature.properties.dedication === 'All Saints') {
+                    return L.marker(latlng, {icon: duckAllSaints});
+                } else {
+                    return L.marker(latlng, {icon: duckGeneral});
+                }
+            },
+
+            onEachFeature: function (feature, layer) {
+                var name = feature.properties.name;
+                var dedication = feature.properties.dedication;
+                var county = feature.properties.county;
+                var dove = feature.properties.dove;
+                layer.bindPopup(
+                    '<b><a href="' + dove + '" target="_blank">' + name + '</a></b><br>' +
+                    dedication + '<br>' +
+                    county
+                );
+                if(feature.properties.name === 'Nottingham' && feature.properties.dedication === 'All Saints') {
+                    allSaintsMarker = layer;
+                }
+            }
+        });
+
+        map.addLayer(geoLayer);
+        map.fitBounds(geoLayer.getBounds());
+
+        if(allSaintsMarker) {
+            allSaintsMarker.openPopup();
+        }
+
+    });
+
+</script>
+
+</div>
+    
+</body>
+</html>
