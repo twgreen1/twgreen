@@ -9,16 +9,16 @@
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
-<script src="Leaflet.geoCSV-master/leaflet.geocsv.js"></script>
+<script src="../../Leaflet.geoCSV-master/leaflet.geocsv.js"></script>
 
 <style>
     body {
     padding: 0;
-    margin-left: 25vw;
+    margin-left: 10vw;
 }
 html, body, #map {
     height: 100%;
-    width: 50vw;
+    width: 80vw;
    
 }
 </style>
@@ -27,7 +27,7 @@ html, body, #map {
 <body>    
 <div id="map">
 <script>
-var map = L.map('map').setView([52.96018, -1.16152], 10);
+var map = L.map('map');
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; OpenStreetMap'}).addTo(map);
 
 var duckGeneral = L.icon({
