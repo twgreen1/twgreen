@@ -1,0 +1,446 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rules</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
+<style>
+
+body {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    background: #f5f1e8;
+    color: #333;
+}
+
+.container {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 45px 20px 70px;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+h1 {
+    font-family: "Cinzel", serif;
+    font-size: clamp(2.2em, 6vw, 4em);
+    letter-spacing: 0.08em;
+    margin: 0 0 12px;
+    color: #3d2a18;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 1.15em;
+    font-style: italic;
+    color: #6b6258;
+}
+
+.ornament {
+    margin: 20px auto;
+    font-size: 1.5em;
+    color: #6b4f2a;
+    letter-spacing: 0.5em;
+}
+
+/* =========================
+   RULES CARD
+   ========================= */
+
+.rules {
+    background: white;
+    border-radius: 18px;
+    padding: 45px 50px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 600px) {
+    .rules {
+        padding: 30px 24px;
+    }
+}
+
+/* =========================
+   SECTIONS
+   ========================= */
+
+.rule-section {
+    margin-bottom: 45px;
+}
+
+.rule-section:last-child {
+    margin-bottom: 0;
+}
+
+.rule-section h2 {
+    font-family: "Cinzel", serif;
+    font-size: 1.55em;
+    color: #4f391f;
+    margin: 0 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #d8c8ad;
+    letter-spacing: 0.04em;
+}
+
+.rule {
+    margin: 14px 0;
+    padding-left: 25px;
+    line-height: 1.7;
+    font-size: 1.02em;
+    position: relative;
+}
+
+.rule::before {
+    content: "☕";
+    position: absolute;
+    left: -2px;
+    top: 0;
+    font-size: 0.8em;
+}
+
+.subrule {
+    margin: 10px 0 10px 30px;
+    padding-left: 25px;
+    line-height: 1.65;
+    position: relative;
+}
+
+.subrule::before {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    color: #6b4f2a;
+    font-size: 0.7em;
+}
+
+/* =========================
+   SPECIAL RULES
+   ========================= */
+
+.important {
+    background: #f5f1e8;
+    border-left: 5px solid #6b4f2a;
+    padding: 15px 20px;
+    margin: 18px 0;
+    border-radius: 0 10px 10px 0;
+}
+
+/* =========================
+   COUNTER LINK
+   ========================= */
+
+.counter-link {
+    text-align: center;
+    margin-top: 45px;
+}
+
+.counter-link a {
+    display: inline-block;
+    background: #6b4f2a;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 16px 30px;
+    font-family: "Cinzel", serif;
+    font-size: 1.05em;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.counter-link a:hover {
+    background: #4f391f;
+    transform: translateY(-2px);
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+
+.footer {
+    text-align: center;
+    margin-top: 35px;
+    color: #777;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>Tea Competition</h1>
+
+        <div class="ornament">
+            ☕ ◆ ☕
+        </div>
+
+        <div class="subtitle">
+            The Official Rules &amp; Regulations
+        </div>
+
+    </div>
+
+
+    <div class="rules">
+
+
+        <!-- =========================
+             1. VOLUME
+             ========================= -->
+
+        <section class="rule-section">
+
+            <h2>1. Volume of a Cup of Tea</h2>
+
+            <div class="rule">
+                The cup from which the tea is drunk is to contain a minimum of
+                250ml of liquid tea
+            </div>
+
+            <div class="rule">
+                In the event where the mug is larger (including, but not limited
+                to, sports mugs or those whose capacity is 350ml or greater),
+                only one cup of tea is to be counted.
+            </div>
+
+            <div class="rule">
+                Small cups and mugs, including but not limited to, espresso cups,
+                Asian tasting cups, or half-filled mugs, are not to be counted as
+                a cup of tea.
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             2. COMPOSITION
+             ========================= -->
+
+        <section class="rule-section">
+
+            <h2>2. Composition of a Cup of Tea</h2>
+
+            <div class="rule">
+                The beverage is to be brewed from the <em>Camellia sinensis</em>
+                plant (including, but not limited to, English Breakfast, Earl Grey,
+                Green, Oolong, and White tea).
+            </div>
+
+            <div class="rule">
+                The tea may include additives, including but not limited to milk,
+                sugar, honey, and lemon, which have no effects on the validity of
+                the cup of tea, subject to the other conditions being met.
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             3. VALIDITY
+             ========================= -->
+
+        <section class="rule-section">
+
+            <h2>3. Validity of a Cup of Tea</h2>
+
+            <div class="rule">
+                The cup of tea is only to be counted if it is fully consumed.
+            </div>
+
+            <div class="rule">
+                No more than a reasonable swallow of liquid is to remain at the
+                bottom of the mug.
+            </div>
+
+            <div class="rule">
+                A void cup is one which is left to go entirely stone-cold and
+                abandoned and is therefore not to be added to the tea counter.
+            </div>
+
+            <div class="rule">
+                The cup of tea is to be prepared or ordered by the competitor for
+                themselves, or to be accepted as part of a genuinely offered round.
+            </div>
+
+            <div class="rule">
+                One competitor may not force the other to consume a cup of tea
+                under duress.
+            </div>
+
+            <div class="rule">
+                The cup of tea is only to be counted if it is consumed within the
+                county of Nottinghamshire.
+            </div>
+
+            <div class="important">
+                <strong>Special Circumstances:</strong><br><br>
+
+                Should either competitor be kidnapped by Somali pirates and
+                forced under duress to consume a cup of tea by their captors,
+                only half a cup of tea is to be counted as a show of their
+                commitment to the competition.
+            </div>
+
+            <div class="important">
+                <strong>Competitor Conduct:</strong><br><br>
+
+                The competitor must be deemed to be of sound mind and not under
+                the influence of alcohol or illicit substances at the time of tea
+                consumption, unless prescribed by a qualified doctor with a PhD
+                and an MBE as awarded by the late Queen Elizabeth II.
+                May she Rest in Peace.
+            </div>
+
+            <div class="important">
+                If walking within the grounds of Nottingham Trent University,
+                any such competitor is to be deducted 10 cups of tea from the
+                counter as punishment for being an enemy of the State.
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             4. APPEALS AND WINNERS
+             ========================= -->
+
+        <section class="rule-section">
+
+            <h2>4. Appeals and Winners</h2>
+
+            <div class="rule">
+                A cup of tea is to be logged on the counter within one hour of the
+                completion of consumption. This counter is to be found at
+                https://www.twgreen.uk/tea.
+            </div>
+
+            <div class="rule">
+                If a competitor disputes the accuracy or validity of the running
+                total:
+            </div>
+
+            <div class="subrule">
+                An independent body of arbitration shall be established to
+                investigate possible corruptions or infractions which may or may
+                not have occurred.
+            </div>
+
+            <div class="subrule">
+                The jury is to be composed of the residents of the competitors’
+                house, past and present, excluding any active competitors.
+                This jury is to give a unanimous ruling in order for any rulings
+                to be valid.
+            </div>
+
+            <div class="rule">
+                The competition is deemed to have ended upon termination of the
+                competitors’ rental contract at their house.
+            </div>
+
+            <div class="rule">
+                The winner of the competition is the competitor who ends the
+                competition with the most cups of tea logged on the tea counter.
+            </div>
+
+            <div class="important">
+
+                <strong>In the event of a tie:</strong>
+
+                <div class="subrule">
+                    There is to be a race between the competitors in which they
+                    are to consume 300ml of tea.
+                </div>
+
+                <div class="subrule">
+                    The first person to finish the cup of tea is to be determined
+                    the winner.
+                </div>
+
+                <div class="subrule">
+                    This race is to be umpired by a live audience composed of
+                    Mr Akhtar and himself.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             5. PRIZES
+             ========================= -->
+
+        <section class="rule-section">
+
+            <h2>5. Prizes</h2>
+
+            <div class="rule">
+                The winner of the competition is to receive a prize.
+            </div>
+
+            <div class="subrule">
+                This prize is to be any drink of their choice from the
+                Roebuck Inn, Nottingham, to be paid for by loser.
+            </div>
+
+            <div class="rule">
+                The loser of the competition is to receive a prize.
+            </div>
+
+            <div class="subrule">
+                This prize is to be a pint of Lilley’s cider, which is to be
+                downed.
+            </div>
+
+        </section>
+
+
+    </div>
+
+
+    <!-- BACK TO COUNTER -->
+
+    <div class="counter-link">
+
+        <a href="index.html">
+            ☕ Return to the Tea Counter
+        </a>
+
+    </div>
+
+
+    <div class="footer">
+
+        <div>☕ ◆ ☕ ◆ ☕</div>
+
+        <br>
+
+        The Official Tea Competition Regulations
+
+    </div>
+
+</div>
+
+</body>
+</html>
+```
