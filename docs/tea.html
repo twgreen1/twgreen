@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Thomas & Liam Tea Counter</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f1e8;
+        color: #333;
+        text-align: center;
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 50px 20px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+
+    .date {
+        color: #666;
+        margin-bottom: 40px;
+    }
+
+    .counters {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .counter {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        width: 250px;
+        box-sizing: border-box;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .counter h2 {
+        margin-top: 0;
+        font-size: 1.8em;
+    }
+
+    .count {
+        font-size: 4em;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    button {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 1.2em;
+        cursor: pointer;
+        color: white;
+        transition: transform 0.1s;
+    }
+
+    button:active {
+        transform: scale(0.92);
+    }
+
+    .plus {
+        background: #4f8a5b;
+    }
+
+    .plus:hover {
+        background: #3d7048;
+    }
+
+    .minus {
+        background: #b85c5c;
+    }
+
+    .minus:hover {
+        background: #994646;
+    }
+
+    .reset {
+        margin-top: 40px;
+        background: #888;
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+
+    .reset:hover {
+        background: #666;
+    }
+
+
+    /* =========================================================
+       TEA MAYHEM
+       ========================================================= */
+
+    #teaMayhem {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        pointer-events: none;
+        display: none;
+        overflow: hidden;
+    }
+
+    #teaMayhem.active {
+        display: block;
+    }
+
+
+    /* Dramatic background */
+
+    .mayhem-background {
+        position: absolute;
+        inset: 0;
+
+        background:
+            radial-gradient(
+                circle at center,
+                rgba(255,255,255,0.98) 0%,
+                rgba(255,230,120,0.9) 20%,
+                rgba(160,90,25,0.8) 50%,
+                rgba(30,15,5,0.95) 100%
+            );
+
+        opacity: 0;
+    }
+
+    #teaMayhem.active .mayhem-background {
+        animation: backgroundFlash 2.5s ease-out forwards;
+    }
+
+    @keyframes backgroundFlash {
+
+        0% {
+            opacity: 0;
+        }
+
+        12% {
+            opacity: 1;
+        }
+
+        25% {
+            opacity: 0.45;
+        }
+
+        38% {
+            opacity: 0.95;
+        }
+
+        55% {
+            opacity: 0.4;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+
+    /* =========================================================
+       KETTLE
+       ========================================================= */
+
+    .kettle {
+        position: absolute;
+
+        left: 50%;
+        top: 50%;
+
+        width: 180px;
+        height: 150px;
+
+        transform:
+            translate(-50%, -50%)
+            scale(0);
+
+        opacity: 0;
+    }
+
+    #teaMayhem.active .kettle {
+        animation:
+            kettleAppear
+            2s
+            cubic-bezier(.17,.67,.32,1.3)
+            forwards;
+    }
+
+    @keyframes kettleAppear {
+
+        0% {
+            transform:
+                translate(-50%, -50%)
+                scale(0)
+                rotate(-30deg);
+
+            opacity: 0;
+        }
+
+        15% {
+            transform:
+                translate(-50%, -50%)
+                scale(1.1)
+                rotate(10deg);
+
+            opacity: 1;
+        }
+
+        25% {
+            transform:
+                translate(-50%, -50%)
+                scale(1)
+                rotate(-8deg);
+        }
+
+        35% {
+            transform:
+                translate(-50%, -50%)
+                scale(1)
+                rotate(8deg);
+        }
+
+        45% {
+            transform:
+                translate(-50%, -50%)
+                scale(1)
+                rotate(-8deg);
+        }
+
+        55% {
+            transform:
+                translate(-50%, -50%)
+                scale(1.05)
+                rotate(10deg);
+        }
+
+        70% {
+            transform:
+                translate(-50%, -50%)
+                scale(1.15)
+                rotate(-5deg);
+        }
+
+        82% {
+            transform:
+                translate(-50%, -50%)
+                scale(1)
+                rotate(5deg);
+
+            opacity: 1;
+        }
+
+        100% {
+            transform:
+                translate(-50%, -50%)
+                scale(0)
+                rotate(30deg);
+
+            opacity: 0;
+        }
+    }
+
+
+    /* Kettle body */
+
+    .kettle-body {
+        position: absolute;
+
+        left: 25px;
+        bottom: 10px;
+
+        width: 120px;
+        height: 100px;
+
+        background:
+            linear-gradient(
+                to bottom,
+                #f4f4f4,
+                #aaa
+            );
+
+        border: 5px solid #555;
+
+        border-radius:
+            45%
+            45%
+            35%
+            35%;
+
+        box-shadow:
+            inset 0 -15px 20px rgba(0,0,0,.2),
+            0 10px 25px rgba(0,0,0,.5);
+    }
+
+
+    /* Kettle handle */
+
+    .kettle-handle {
+        position: absolute;
+
+        left: 48px;
+        top: 0;
+
+        width: 75px;
+        height: 60px;
+
+        border:
+            10px solid #555;
+
+        border-bottom: none;
+
+        border-radius:
+            50px
+            50px
+            0
+            0;
+    }
+
+
+    /* Spout */
+
+    .kettle-spout {
+        position: absolute;
+
+        right: -15px;
+        bottom: 65px;
+
+        width: 55px;
+        height: 45px;
+
+        background: #ccc;
+
+        border: 5px solid #555;
+
+        transform: rotate(-25deg);
+
+        clip-path:
+            polygon(
+                0 30%,
+                100% 0,
+                100% 30%,
+                10% 100%
+            );
+    }
+
+
+    /* Lid */
+
+    .kettle-lid {
+        position: absolute;
+
+        left: 60px;
+        top: 25px;
+
+        width: 50px;
+        height: 15px;
+
+        background: #777;
+
+        border-radius: 50%;
+    }
+
+
+    /* Boiling water */
+
+    .water {
+        position: absolute;
+
+        left: 35px;
+        bottom: 30px;
+
+        width: 100px;
+        height: 45px;
+
+        background: #65c7e8;
+
+        border-radius: 50%;
+
+        opacity: .8;
+
+        animation:
+            waterBoil
+            .12s
+            infinite
+            alternate;
+    }
+
+    @keyframes waterBoil {
+
+        from {
+            transform: scaleY(.8);
+        }
+
+        to {
+            transform: scaleY(1.2);
+        }
+    }
+
+
+    /* =========================================================
+       STEAM
+       ========================================================= */
+
+    .steam {
+        position: absolute;
+
+        top: -65px;
+
+        font-size: 50px;
+
+        opacity: 0;
+    }
+
+    .steam.one {
+        left: 20px;
+    }
+
+    .steam.two {
+        left: 65px;
+    }
+
+    .steam.three {
+        left: 105px;
+    }
+
+    #teaMayhem.active .steam {
+        animation:
+            steamRise
+            1.1s
+            ease-out
+            infinite;
+    }
+
+    .steam.two {
+        animation-delay: .2s !important;
+    }
+
+    .steam.three {
+        animation-delay: .4s !important;
+    }
+
+    @keyframes steamRise {
+
+        0% {
+            opacity: 0;
+            transform:
+                translateY(30px)
+                scale(.5)
+                rotate(-10deg);
+        }
+
+        30% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+
+            transform:
+                translateY(-100px)
+                scale(1.4)
+                rotate(15deg);
+        }
+    }
+
+
+    /* =========================================================
+       BOILING TEXT
+       ========================================================= */
+
+    .boiling-text {
+        position: absolute;
+
+        left: 50%;
+        top: calc(50% + 130px);
+
+        transform: translateX(-50%);
+
+        color: white;
+
+        font-size: 2em;
+        font-weight: bold;
+
+        text-shadow:
+            0 3px 0 #5b351c,
+            0 0 15px white;
+
+        opacity: 0;
+
+        white-space: nowrap;
+    }
+
+    #teaMayhem.active .boiling-text {
+        animation:
+            boilingText
+            1.6s
+            ease-out
+            forwards;
+    }
+
+    @keyframes boilingText {
+
+        0%, 100% {
+            opacity: 0;
+        }
+
+        20%, 70% {
+            opacity: 1;
+        }
+    }
+
+
+    /* =========================================================
+       EXPLOSION
+       ========================================================= */
+
+    .explosion {
+        position: absolute;
+
+        left: 50%;
+        top: 50%;
+
+        width: 30px;
+        height: 30px;
+
+        transform:
+            translate(-50%, -50%)
+            scale(0);
+
+        background: #fff4b0;
+
+        border-radius: 50%;
+
+        box-shadow:
+            0 0 20px white,
+            0 0 50px #ffd45c,
+            0 0 100px #ff9f1c;
+    }
+
+    #teaMayhem.active .explosion {
+        animation:
+            explosion
+            1s
+            cubic-bezier(.1,.8,.2,1)
+            1.35s
+            forwards;
+    }
+
+    @keyframes explosion {
+
+        0% {
+            transform:
+                translate(-50%, -50%)
+                scale(0);
+
+            opacity: 1;
+        }
+
+        20% {
+            transform:
+                translate(-50%, -50%)
+                scale(3);
+        }
+
+        100% {
+            transform:
+                translate(-50%, -50%)
+                scale(35);
+
+            opacity: 0;
+        }
+    }
+
+
+    /* =========================================================
+       SCREEN SHAKE
+       ========================================================= */
+
+    body.screen-shake {
+        animation:
+            screenShake
+            .7s
+            ease-in-out;
+    }
+
+    @keyframes screenShake {
+
+        0% {
+            transform: translate(0,0) rotate(0);
+        }
+
+        10% {
+            transform: translate(-12px,7px) rotate(-1deg);
+        }
+
+        20% {
+            transform: translate(10px,-8px) rotate(1deg);
+        }
+
+        30% {
+            transform: translate(-15px,-5px) rotate(-1deg);
+        }
+
+        40% {
+            transform: translate(12px,10px) rotate(1deg);
+        }
+
+        50% {
+            transform: translate(-8px,-10px) rotate(-1deg);
+        }
+
+        60% {
+            transform: translate(8px,5px);
+        }
+
+        100% {
+            transform: translate(0,0) rotate(0);
+        }
+    }
+
+
+    /* =========================================================
+       FLYING TEA
+       ========================================================= */
+
+    .tea-particle {
+        position: fixed;
+
+        left: 50%;
+        top: 50%;
+
+        font-size: 30px;
+
+        z-index: 10001;
+
+        opacity: 0;
+    }
+
+    .tea-particle.fly {
+        animation:
+            teaFly
+            1.5s
+            cubic-bezier(.15,.75,.25,1)
+            forwards;
+    }
+
+    @keyframes teaFly {
+
+        0% {
+            opacity: 1;
+
+            transform:
+                translate(-50%,-50%)
+                scale(.2)
+                rotate(0deg);
+        }
+
+        15% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+
+            transform:
+                translate(
+                    calc(-50% + var(--x)),
+                    calc(-50% + var(--y))
+                )
+                scale(var(--scale))
+                rotate(var(--rotation));
+        }
+    }
+
+
+    /* =========================================================
+       EXPLOSION RAYS
+       ========================================================= */
+
+    .burst {
+        position: fixed;
+
+        left: 50%;
+        top: 50%;
+
+        width: 8px;
+        height: 80px;
+
+        background: white;
+
+        border-radius: 10px;
+
+        transform-origin:
+            center 100%;
+
+        opacity: 0;
+
+        z-index: 10000;
+    }
+
+    .burst.fly {
+        animation:
+            burstFly
+            .9s
+            ease-out
+            forwards;
+    }
+
+    @keyframes burstFly {
+
+        0% {
+            opacity: 1;
+
+            transform:
+                translate(-50%,-50%)
+                rotate(var(--rotation))
+                scaleY(0);
+        }
+
+        100% {
+            opacity: 0;
+
+            transform:
+                translate(
+                    calc(-50% + var(--x)),
+                    calc(-50% + var(--y))
+                )
+                rotate(var(--rotation))
+                scaleY(1);
+        }
+    }
+
+
+    /* =========================================================
+       BIG TEA MESSAGE
+       ========================================================= */
+
+    .tea-message {
+        position: absolute;
+
+        left: 50%;
+        top: 20%;
+
+        transform:
+            translateX(-50%)
+            scale(0);
+
+        color: white;
+
+        font-size:
+            clamp(2.5em, 10vw, 6em);
+
+        font-weight: 900;
+
+        text-transform: uppercase;
+
+        text-shadow:
+            5px 5px 0 #5a3015,
+            0 0 25px #ffbd4a;
+
+        white-space: nowrap;
+
+        opacity: 0;
+    }
+
+    #teaMayhem.active .tea-message {
+        animation:
+            teaMessage
+            1.1s
+            cubic-bezier(.17,.67,.32,1.4)
+            1.5s
+            forwards;
+    }
+
+    @keyframes teaMessage {
+
+        0% {
+            opacity: 0;
+
+            transform:
+                translateX(-50%)
+                scale(0)
+                rotate(-15deg);
+        }
+
+        60% {
+            opacity: 1;
+
+            transform:
+                translateX(-50%)
+                scale(1.2)
+                rotate(5deg);
+        }
+
+        100% {
+            opacity: 0;
+
+            transform:
+                translateX(-50%)
+                scale(1)
+                rotate(0);
+        }
+    }
+
+
+    /* =========================================================
+       WHITE FLASH
+       ========================================================= */
+
+    .flash {
+        position: absolute;
+
+        inset: 0;
+
+        background: white;
+
+        opacity: 0;
+    }
+
+    #teaMayhem.active .flash {
+        animation:
+            flash
+            .5s
+            ease-out
+            1.3s;
+    }
+
+    @keyframes flash {
+
+        0% {
+            opacity: 0;
+        }
+
+        20% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 600px) {
+
+        .container {
+            padding: 30px 15px;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        .counter {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .tea-message {
+            font-size: 3em;
+        }
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<div class="container">
+
+    <h1>☕ Tea Counter</h1>
+
+    <div class="date">
+        Counting cups of tea from <strong>18/09/2026</strong>
+    </div>
+
+    <div class="counters">
+
+        <!-- THOMAS -->
+
+        <div class="counter">
+
+            <h2>Thomas</h2>
+
+            <div
+                class="count"
+                id="thomasCount">
+                0
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="minus"
+                    onclick="removeTea('thomas')">
+                    −
+                </button>
+
+                <button
+                    class="plus"
+                    onclick="addTea('thomas')">
+                    + ☕
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- LIAM -->
+
+        <div class="counter">
+
+            <h2>Liam</h2>
+
+            <div
+                class="count"
+                id="liamCount">
+                0
+            </div>
+
+            <div class="buttons">
+
+                <button
+                    class="minus"
+                    onclick="removeTea('liam')">
+                    −
+                </button>
+
+                <button
+                    class="plus"
+                    onclick="addTea('liam')">
+                    + ☕
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="reset"
+        onclick="resetCounters()">
+        Reset Counters
+    </button>
+
+</div>
+
+
+<!-- =========================================================
+     CRAZY TEA ANIMATION
+     ========================================================= -->
+
+<div id="teaMayhem">
+
+    <div class="mayhem-background"></div>
+
+    <div class="flash"></div>
+
+    <div class="explosion"></div>
+
+
+    <!-- KETTLE -->
+
+    <div class="kettle">
+
+        <div class="kettle-handle"></div>
+
+        <div class="kettle-lid"></div>
+
+        <div class="kettle-spout"></div>
+
+        <div class="kettle-body">
+
+            <div class="water"></div>
+
+        </div>
+
+        <div class="steam one">♨</div>
+        <div class="steam two">♨</div>
+        <div class="steam three">♨</div>
+
+    </div>
+
+
+    <div class="boiling-text">
+        THE KETTLE IS BOILING...
+    </div>
+
+
+    <div class="tea-message">
+        TEA!!!
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FIREBASE
+     ========================================================= -->
+
+<script type="module">
+
+    import {
+        initializeApp
+    } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+
+    import {
+        getDatabase,
+        ref,
+        onValue,
+        update,
+        increment,
+        get
+    } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+
+    /* Firebase configuration */
+
+    const firebaseConfig = {
+
+        apiKey:
+            "AIzaSyBvh1IVs4GBJIGQgTPUoGDQ9cVGvy17ySE",
+
+        authDomain:
+            "teacounter-89965.firebaseapp.com",
+
+        projectId:
+            "teacounter-89965",
+
+        storageBucket:
+            "teacounter-89965.firebasestorage.app",
+
+        messagingSenderId:
+            "820125781317",
+
+        appId:
+            "1:820125781317:web:d6e6543d43bb37d219822c",
+
+        databaseURL:
+            "https://teacounter-89965-default-rtdb.firebaseio.com/"
+    };
+
+
+    /* Initialise Firebase */
+
+    const app =
+        initializeApp(firebaseConfig);
+
+    const database =
+        getDatabase(app);
+
+
+    /* Shared counter location */
+
+    const teaRef =
+        ref(database, "teaCounters");
+
+
+    /*
+     * Listen for changes.
+     *
+     * This keeps every device synchronised.
+     */
+
+    onValue(
+        teaRef,
+        (snapshot) => {
+
+            const data =
+                snapshot.val() || {};
+
+
+            const thomas =
+                data.thomas || 0;
+
+            const liam =
+                data.liam || 0;
+
+
+            document.getElementById(
+                "thomasCount"
+            ).textContent = thomas;
+
+
+            document.getElementById(
+                "liamCount"
+            ).textContent = liam;
+        }
+    );
+
+
+    /*
+     * ========================================================
+     * ADD TEA
+     * ========================================================
+     */
+
+    window.addTea =
+        async function(person) {
+
+            try {
+
+                /*
+                 * Atomically add one.
+                 */
+
+                await update(
+                    ref(database),
+                    {
+                        ["teaCounters/" + person]:
+                            increment(1)
+                    }
+                );
+
+
+                /*
+                 * The database has been updated.
+                 *
+                 * Now unleash the kettle.
+                 */
+
+                unleashTeaMayhem();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Error adding tea:",
+                    error
+                );
+
+                alert(
+                    "Couldn't add the tea. Check your internet connection."
+                );
+            }
+        };
+
+
+    /*
+     * ========================================================
+     * REMOVE TEA
+     * ========================================================
+     */
+
+    window.removeTea =
+        async function(person) {
+
+            try {
+
+                const counterRef =
+                    ref(
+                        database,
+                        "teaCounters/" + person
+                    );
+
+
+                const snapshot =
+                    await get(counterRef);
+
+
+                const current =
+                    snapshot.exists()
+                        ? Number(snapshot.val())
+                        : 0;
+
+
+                /*
+                 * Don't allow negative counters.
+                 */
+
+                if (current <= 0) {
+                    return;
+                }
+
+
+                await update(
+                    ref(database),
+                    {
+                        ["teaCounters/" + person]:
+                            increment(-1)
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Error removing tea:",
+                    error
+                );
+            }
+        };
+
+
+    /*
+     * ========================================================
+     * RESET
+     * ========================================================
+     */
+
+    window.resetCounters =
+        async function() {
+
+            if (
+                !confirm(
+                    "Are you sure you want to reset both counters?"
+                )
+            ) {
+                return;
+            }
+
+
+            try {
+
+                await update(
+                    ref(database),
+                    {
+                        "teaCounters/thomas": 0,
+                        "teaCounters/liam": 0
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Error resetting counters:",
+                    error
+                );
+            }
+        };
+
+
+    /*
+     * ========================================================
+     * TEA MAYHEM
+     * ========================================================
+     */
+
+    let animationRunning = false;
+
+
+    function unleashTeaMayhem() {
+
+        /*
+         * Don't let someone spam the button and break
+         * the animation.
+         */
+
+        if (animationRunning) {
+            return;
+        }
+
+
+        animationRunning = true;
+
+
+        const overlay =
+            document.getElementById(
+                "teaMayhem"
+            );
+
+
+        overlay.classList.add("active");
+
+
+        /*
+         * KETTLE BOILS
+         */
+
+        setTimeout(() => {
+
+            /*
+             * Screen starts shaking just before
+             * the kettle explodes.
+             */
+
+            document.body.classList.add(
+                "screen-shake"
+            );
+
+        }, 1300);
+
+
+        /*
+         * TEA EXPLOSION
+         */
+
+        setTimeout(() => {
+
+            launchTeaParticles();
+
+            launchBursts();
+
+        }, 1350);
+
+
+        /*
+         * CLEAN UP
+         */
+
+        setTimeout(() => {
+
+            overlay.classList.remove(
+                "active"
+            );
+
+            document.body.classList.remove(
+                "screen-shake"
+            );
+
+            animationRunning = false;
+
+        }, 3000);
+    }
+
+
+    /*
+     * ========================================================
+     * FLYING TEA CUPS
+     * ========================================================
+     */
+
+    function launchTeaParticles() {
+
+        const teas = [
+
+            "☕",
+            "☕",
+            "🍵",
+            "☕",
+            "☕",
+            "🍵",
+            "☕",
+            "☕",
+            "🍵",
+            "☕",
+            "☕",
+            "☕",
+            "🍵",
+            "☕",
+            "☕",
+            "☕"
+
+        ];
+
+
+        teas.forEach(
+            (tea, index) => {
+
+                const particle =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                particle.className =
+                    "tea-particle fly";
+
+
+                particle.textContent =
+                    tea;
+
+
+                /*
+                 * Calculate an explosion direction.
+                 */
+
+                const angle =
+                    (
+                        Math.PI * 2 *
+                        index /
+                        teas.length
+                    )
+                    +
+                    (
+                        Math.random() -
+                        .5
+                    )
+                    * .5;
+
+
+                const distance =
+                    180 +
+                    Math.random() * 450;
+
+
+                particle.style.setProperty(
+                    "--x",
+                    Math.cos(angle) *
+                    distance +
+                    "px"
+                );
+
+
+                particle.style.setProperty(
+                    "--y",
+                    Math.sin(angle) *
+                    distance +
+                    "px"
+                );
+
+
+                particle.style.setProperty(
+                    "--scale",
+                    .5 +
+                    Math.random() * 1.2
+                );
+
+
+                particle.style.setProperty(
+                    "--rotation",
+                    (
+                        Math.random() *
+                        1000 -
+                        500
+                    ) +
+                    "deg"
+                );
+
+
+                particle.style.animationDelay =
+                    Math.random() *
+                    .15 +
+                    "s";
+
+
+                document.body.appendChild(
+                    particle
+                );
+
+
+                setTimeout(
+                    () => {
+                        particle.remove();
+                    },
+                    1800
+                );
+
+            }
+        );
+    }
+
+
+    /*
+     * ========================================================
+     * EXPLOSION RAYS
+     * ========================================================
+     */
+
+    function launchBursts() {
+
+        for (
+            let i = 0;
+            i < 24;
+            i++
+        ) {
+
+            const burst =
+                document.createElement(
+                    "div"
+                );
+
+
+            burst.className =
+                "burst fly";
+
+
+            const angle =
+                (360 / 24) * i;
+
+
+            const distance =
+                180 +
+                Math.random() * 400;
+
+
+            burst.style.setProperty(
+                "--rotation",
+                angle + "deg"
+            );
+
+
+            burst.style.setProperty(
+                "--x",
+                Math.cos(
+                    angle *
+                    Math.PI /
+                    180
+                ) *
+                distance +
+                "px"
+            );
+
+
+            burst.style.setProperty(
+                "--y",
+                Math.sin(
+                    angle *
+                    Math.PI /
+                    180
+                ) *
+                distance +
+                "px"
+            );
+
+
+            burst.style.animationDelay =
+                Math.random() *
+                .1 +
+                "s";
+
+
+            document.body.appendChild(
+                burst
+            );
+
+
+            setTimeout(
+                () => {
+                    burst.remove();
+                },
+                1200
+            );
+
+        }
+    }
+
+</script>
+```
+
+</body>
+</html>
