@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CD Collection</title>
+  
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 2rem;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .controls {
+      background: #fff;
+      padding: 1.25rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .table-container {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+    select {
+      padding: 0.45rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    tfoot select {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #statusMessage {
+      font-weight: 500;
+      color: #555;
+    }
+    #statusMessage.error {
+      color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls" id="controlsBar">
+    <span id="statusMessage">Loading table data...</span>
+    
+    <div id="sheetSelectorContainer" style="display: none;">
+      <label for="sheetSelector"><strong>Select Table:</strong></label>
+      <select id="sheetSelector"></select>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table id="pivotTable" class="display nowrap" style="width:100%">
+      <thead></thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table>
+  </div>
+
+  <!-- jQuery, SheetJS, and DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    // ==================================================
+    // CONFIGURATION: Set your file path, sheet & range
+    // ==================================================
+    const EXCEL_FILE_URL = 'cdcollection.xlsx'; // Relative or full URL to your .xlsx file
+    const DEFAULT_SHEET  = '';       // Exact tab name to load first (leave '' for the 1st tab)
+    const TABLE_RANGE    = 'A1:C1000'; // Top-left header cell to bottom-right data cell (leave '' for full sheet)
+
+    let workbook = null;
+    let dataTableInstance = null;
+
+    // Fetch and parse the predetermined Excel file on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+      const statusEl = document.getElementById('statusMessage');
+
+      try {
+        // Append timestamp so browsers always fetch the latest version of the file
+        const cacheBustedUrl = `${EXCEL_FILE_URL}?v=${new Date().getTime()}`;
+        const response = await fetch(cacheBustedUrl);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}: Could not find "${EXCEL_FILE_URL}"`);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+
+        if (!workbook.SheetNames.length) {
+          throw new Error('The Excel workbook contains no sheets.');
+        }
+
+        // Populate the sheet switcher dropdown
+        const sheetSelector = document.getElementById('sheetSelector');
+        sheetSelector.innerHTML = '';
+        workbook.SheetNames.forEach(name => {
+          const option = document.createElement('option');
+          option.value = name;
+          option.textContent = name;
+          sheetSelector.appendChild(option);
+        });
+
+        // Determine initial sheet to display
+        const initialSheet = workbook.SheetNames.includes(DEFAULT_SHEET)
+          ? DEFAULT_SHEET
+          : workbook.SheetNames[0];
+        sheetSelector.value = initialSheet;
+
+        // Show dropdown if there are multiple sheets; hide controls bar if only 1 sheet
+        if (workbook.SheetNames.length > 1) {
+          statusEl.style.display = 'none';
+          document.getElementById('sheetSelectorContainer').style.display = 'block';
+        } else {
+          document.getElementById('controlsBar').style.display = 'none';
+        }
+
+        renderSheet(initialSheet);
+
+      } catch (err) {
+        statusEl.textContent = `Error loading file: ${err.message}`;
+        statusEl.classList.add('error');
+        console.error(err);
+      }
+    });
+
+    // Handle switching between sheets
+    document.getElementById('sheetSelector').addEventListener('change', function(e) {
+      renderSheet(e.target.value);
+    });
+
+    function renderSheet(sheetName) {
+      const worksheet = workbook.Sheets[sheetName];
+      
+      // Read only the specified cell range and preserve Excel's number/date formatting
+      const rawData = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
+        defval: "",
+        raw: false,
+        ...(TABLE_RANGE && { range: TABLE_RANGE })
+      });
+      
+      // Filter out completely blank rows
+      const cleanData = rawData.filter(row => row.some(cell => cell !== ""));
+      if (cleanData.length < 2) return;
+
+      // Destroy existing DataTable instance when switching sheets
+      if (dataTableInstance) {
+        dataTableInstance.destroy();
+        $('#pivotTable').empty().append('<thead></thead><tbody></tbody><tfoot></tfoot>');
+      }
+
+      const headers = cleanData[0];
+      const rows = cleanData.slice(1);
+
+      // Build Table Header & Footer (for column dropdown filters)
+      let headerHtml = '<tr>';
+      let footerHtml = '<tr>';
+      headers.forEach(header => {
+        headerHtml += `<th>${header || 'Column'}</th>`;
+        footerHtml += `<th></th>`;
+      });
+      headerHtml += '</tr>';
+      footerHtml += '</tr>';
+
+      $('#pivotTable thead').html(headerHtml);
+      $('#pivotTable tfoot').html(footerHtml);
+
+      // Build Table Body
+      let bodyHtml = '';
+      rows.forEach(row => {
+        bodyHtml += '<tr>';
+        for (let i = 0; i < headers.length; i++) {
+          bodyHtml += `<td>${row[i] !== undefined ? row[i] : ''}</td>`;
+        }
+        bodyHtml += '</tr>';
+      });
+      $('#pivotTable tbody').html(bodyHtml);
+
+      // Initialize DataTables with ordering, global search, and per-column filters
+      dataTableInstance = $('#pivotTable').DataTable({
+        pageLength: 25,
+        order: [], // Keeps Excel's original row order on initial load
+        initComplete: function () {
+          this.api().columns().every(function () {
+            const column = this;
+            const select = $('<select><option value="">All</option></select>')
+              .appendTo($(column.footer()).empty())
+              .on('change', function () {
+                const val = $.fn.dataTable.util.escapeRegex($(this).val());
+                column.search(val ? '^' + val + '$' : '', true, false).draw();
+              });
+
+            column.data().unique().sort().each(function (d) {
+              if (d !== '') {
+                select.append(`<option value="${d}">${d}</option>`);
+              }
+            });
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>
