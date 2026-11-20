@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
-<title>Thomas W Green - BellBoard Viewer</title>
+<title>Bells</title>
 <style>
   :root {
     --bg: #faf8f5;
@@ -584,16 +584,19 @@
     margin-bottom: 12px;
     font-size: 13px;
   }
+  #cloudBootOverlay { position:fixed; inset:0; z-index:99999; display:flex; align-items:center; justify-content:center; background:var(--bg, #fff); color:var(--text, #222); font-size:16px; font-weight:600; }
+  #cloudBootOverlay.hidden { display:none; }
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
 </head>
 <body>
+<div id="cloudBootOverlay">Loading performances from cloud…</div>
 
 <header>
   <div>
-    <h1>Thomas W Green - BellBoard Viewer</h1>
+    <h1>Thomas W Green</h1>
   </div>
   <div class="header-actions">
     <span class="status-pill" id="syncStatus">Ready</span>
@@ -1003,14 +1006,19 @@
 <div class="modal-backdrop" id="adminLoginModal">
   <div class="modal" style="max-width:400px;">
     <h3>Admin Access</h3>
-    <p style="color:var(--muted);font-size:13px;">Enter your admin PIN to unlock manual syncing, manual performance entry, deletion, and ringer alias management.</p>
+    <p style="color:var(--muted);font-size:13px;">Sign in with your Firebase admin email and password to unlock editing and syncing.</p>
     <div class="form-field" style="margin-bottom:14px;">
-      <label for="adminPinInput">Admin PIN</label>
-      <input type="password" id="adminPinInput" placeholder="Enter Admin PIN" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAdminLogin()">
+      <label for="adminEmailInput">Email</label>
+      <input type="email" id="adminEmailInput" placeholder="Admin email" autocomplete="username">
     </div>
+    <div class="form-field" style="margin-bottom:14px;">
+      <label for="adminPasswordInput">Password</label>
+      <input type="password" id="adminPasswordInput" placeholder="Firebase password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAdminLogin()">
+    </div>
+    <div id="adminLoginError" style="color:#b91c1c;font-size:13px;margin-bottom:10px;"></div>
     <div style="display:flex;justify-content:flex-end;gap:8px;">
       <button class="btn" onclick="closeModal('adminLoginModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitAdminLogin()">Unlock</button>
+      <button class="btn btn-primary" onclick="submitAdminLogin()">Sign in</button>
     </div>
   </div>
 </div>
@@ -1166,12 +1174,109 @@
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>
 const TARGET_RINGER = "Thomas W Green";
 const STORAGE_KEY_PERFS = "twg_bb_performances_v4";
 const STORAGE_KEY_ALIASES = "twg_bb_aliases_v4";
 const STORAGE_KEY_EMAIL = "twg_bb_email_v4";
 const STORAGE_KEY_PIN = "twg_bb_admin_pin_v4";
+
+// Firebase project: bb-viewer
+const firebaseConfig = {
+  apiKey: "AIzaSyDRHH_yQA0f7yjil3svkOof4xv3GaxlGvs",
+  authDomain: "bb-viewer.firebaseapp.com",
+  projectId: "bb-viewer",
+  storageBucket: "bb-viewer.firebasestorage.app",
+  messagingSenderId: "966648387518",
+  appId: "1:966648387518:web:dfaf03932e1d0a6df80bef"
+};
+let firebaseApp = null, firebaseAuth = null, firestoreDb = null;
+let cloudPerfUnsubscribe = null, cloudAliasUnsubscribe = null;
+let cloudReady = false, cloudPerfLoaded = false, cloudAliasesLoaded = false;
+let cloudWriteBusy = false;
+const CLOUD_PERFS_COLLECTION = "performances";
+const CLOUD_ALIASES_DOC = "settings/aliases";
+const CLOUD_PERF_STATE_DOC = "settings/performanceSync";
+let cloudPerfSyncInitialized = false;
+let cloudPerfSnapshotEmpty = false;
+function initFirebaseCloud() {
+  try {
+    if (!firebase.apps.length) firebaseApp = firebase.initializeApp(firebaseConfig); else firebaseApp = firebase.app();
+    firebaseAuth = firebaseApp.auth(); firestoreDb = firebaseApp.firestore();
+    // Public read listeners; Firestore rules restrict writes to the admin UID.
+    cloudPerfUnsubscribe = firestoreDb.collection(CLOUD_PERFS_COLLECTION).onSnapshot(snapshot => {
+      cloudPerfLoaded = true;
+      document.getElementById("cloudBootOverlay")?.classList.add("hidden");
+      cloudPerfSnapshotEmpty = snapshot.empty;
+      if (!snapshot.empty) {
+        const cloudList = snapshot.docs.map(d => d.data()).filter(x => x && x.id);
+        allPerformances = deduplicatePerformances(cloudList);
+        try { localStorage.setItem(STORAGE_KEY_PERFS, JSON.stringify(allPerformances)); } catch(e) {}
+        renderAfterCloudLoad();
+      } else {
+        // Do not let stale local data survive an initialized, empty cloud collection.
+        if (cloudPerfSyncInitialized) {
+          allPerformances = [];
+          try { localStorage.setItem(STORAGE_KEY_PERFS, "[]"); } catch(e) {}
+          renderAfterCloudLoad();
+        }
+      }
+      cloudReady = cloudPerfLoaded && cloudAliasesLoaded;
+      setCloudStatus();
+    }, err => { console.warn("Firestore performances listener:", err); document.getElementById("cloudBootOverlay")?.classList.add("hidden"); setCloudStatus("Cloud read error: " + err.message); });
+    firestoreDb.doc(CLOUD_PERF_STATE_DOC).onSnapshot(doc => {
+      cloudPerfSyncInitialized = !!(doc.exists && doc.data().initialized);
+      // Firestore listeners can arrive in either order. If the empty performances
+      // snapshot arrived first, apply the initialized state now and clear stale local data.
+      if (cloudPerfLoaded && cloudPerfSnapshotEmpty && cloudPerfSyncInitialized) {
+        allPerformances = [];
+        try { localStorage.setItem(STORAGE_KEY_PERFS, "[]"); } catch(e) {}
+        renderAfterCloudLoad();
+      }
+    }, err => console.warn("Firestore performance sync state:", err));
+    cloudAliasUnsubscribe = firestoreDb.doc(CLOUD_ALIASES_DOC).onSnapshot(doc => {
+      cloudAliasesLoaded = true;
+      if (doc.exists && doc.data().aliases) {
+        manualAliases = { ...DEFAULT_ALIASES, ...doc.data().aliases };
+        try { localStorage.setItem(STORAGE_KEY_ALIASES, JSON.stringify(manualAliases)); } catch(e) {}
+        renderAliasList(); populateFilterDropdowns(); applyFilters();
+      }
+      cloudReady = cloudPerfLoaded && cloudAliasesLoaded; setCloudStatus();
+    }, err => { console.warn("Firestore aliases listener:", err); setCloudStatus("Cloud read error: " + err.message); });
+  } catch (err) { console.error("Firebase init failed:", err); setCloudStatus("Firebase connection failed: " + err.message); }
+}
+function renderAfterCloudLoad() { populateFilterDropdowns(); applyFilters(); }
+function setCloudStatus(message) { const el=document.getElementById("syncStatus"); if (el) el.textContent = message || (cloudReady ? `Cloud connected (${allPerformances.length} performances)` : "Connecting to cloud…"); }
+async function writePerformancesToCloud() {
+  if (!firestoreDb || !firebaseAuth?.currentUser || !isAdmin || cloudWriteBusy) return;
+  cloudWriteBusy = true;
+  try {
+    const col = firestoreDb.collection(CLOUD_PERFS_COLLECTION);
+    const existing = await col.get();
+    const desired = new Map(allPerformances.map(p => [String(p.id), p]));
+    const batches = []; let batch = firestoreDb.batch(), count = 0;
+    existing.docs.forEach(d => { if (!desired.has(d.id)) { batch.delete(d.ref); count++; } });
+    desired.forEach((perf, id) => { batch.set(col.doc(id), perf); count++; });
+    // Firestore batch maximum is 500 operations; use conservative chunks via operations list.
+    const ops = []; existing.docs.forEach(d => { if (!desired.has(d.id)) ops.push({type:"delete",ref:d.ref}); });
+    desired.forEach((perf,id)=>ops.push({type:"set",ref:col.doc(id),data:perf}));
+    for (let i=0;i<ops.length;i+=400) { const b=firestoreDb.batch(); ops.slice(i,i+400).forEach(op=>op.type==="delete"?b.delete(op.ref):b.set(op.ref,op.data)); batches.push(b); }
+    for (const b of batches) await b.commit();
+    await firestoreDb.doc(CLOUD_PERF_STATE_DOC).set({initialized:true, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    cloudPerfSyncInitialized = true;
+    setCloudStatus(`Saved to cloud (${allPerformances.length} performances)`);
+  } catch(err) { console.error("Cloud performance save:",err); setCloudStatus("Cloud save failed: " + err.message); }
+  finally { cloudWriteBusy = false; }
+}
+async function writeAliasesToCloud() {
+  if (!firestoreDb || !firebaseAuth?.currentUser || !isAdmin) return;
+  try { await firestoreDb.doc(CLOUD_ALIASES_DOC).set({aliases: manualAliases, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}); }
+  catch(err) { console.error("Cloud aliases save:",err); setCloudStatus("Alias cloud save failed: " + err.message); }
+}
+
 
 const SEED_PERFORMANCES = [
   {
@@ -1569,9 +1674,9 @@ function loadState() {
 }
 
 function savePerformances() {
-  try {
-    localStorage.setItem(STORAGE_KEY_PERFS, JSON.stringify(allPerformances));
-  } catch (e) {}
+  try { localStorage.setItem(STORAGE_KEY_PERFS, JSON.stringify(allPerformances)); } catch (e) {}
+  // Cloud write only when Firebase-authenticated Admin is active.
+  writePerformancesToCloud();
 }
 
 function computeFingerprint(p) {
@@ -1930,30 +2035,41 @@ function closeModal(id) {
 
 function toggleAdminMode() {
   if (isAdmin) {
-    isAdmin = false;
-    document.body.classList.remove("is-admin");
+    isAdmin = false; document.body.classList.remove("is-admin");
     document.getElementById("btnAdminToggle").textContent = "Admin Login";
-    selectedPerfIds.clear();
-    renderPerformances();
+    selectedPerfIds.clear(); renderPerformances();
+    if (firebaseAuth && firebaseAuth.currentUser) firebaseAuth.signOut();
   } else {
-    document.getElementById("adminPinInput").value = "";
-    openModal("adminLoginModal");
-    setTimeout(() => document.getElementById("adminPinInput").focus(), 50);
+    document.getElementById("adminEmailInput").value = "";
+    document.getElementById("adminPasswordInput").value = "";
+    document.getElementById("adminLoginError").textContent = "";
+    openModal("adminLoginModal"); setTimeout(() => document.getElementById("adminEmailInput").focus(), 50);
   }
 }
-
-function submitAdminLogin() {
-  const entered = document.getElementById("adminPinInput").value.trim();
-  const savedPin = localStorage.getItem(STORAGE_KEY_PIN) || "1260";
-  if (entered === savedPin || entered === "5040" || entered === "1260") {
-    isAdmin = true;
-    document.body.classList.add("is-admin");
+async function submitAdminLogin() {
+  const email = document.getElementById("adminEmailInput").value.trim();
+  const password = document.getElementById("adminPasswordInput").value;
+  const errEl = document.getElementById("adminLoginError");
+  if (!firebaseAuth) { errEl.textContent = "Firebase is not connected. Reload the page and try again."; return; }
+  try {
+    const credential = await firebaseAuth.signInWithEmailAndPassword(email, password);
+    isAdmin = true; document.body.classList.add("is-admin");
     document.getElementById("btnAdminToggle").textContent = "Exit Admin";
-    closeModal("adminLoginModal");
-    renderAliasList();
-    renderPerformances();
-  } else {
-    document.getElementById("adminPinInput").style.borderColor = "#b91c1c";
+    closeModal("adminLoginModal"); renderAliasList(); renderPerformances();
+    // Migrate local performances only if cloud storage has never been initialized.
+    const syncState = await firestoreDb.doc(CLOUD_PERF_STATE_DOC).get();
+    const cloudSnap = await firestoreDb.collection(CLOUD_PERFS_COLLECTION).limit(1).get();
+    if (!syncState.exists && cloudSnap.empty && allPerformances.length) {
+      await writePerformancesToCloud();
+    } else if (!syncState.exists && cloudSnap.empty) {
+      await firestoreDb.doc(CLOUD_PERF_STATE_DOC).set({initialized:true, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      cloudPerfSyncInitialized = true;
+    }
+    await writeAliasesToCloud();
+    setCloudStatus(`Admin connected (${allPerformances.length} performances)`);
+  } catch (err) {
+    errEl.textContent = err.message || "Sign-in failed. Check your email and password.";
+    document.getElementById("adminPasswordInput").style.borderColor = "#b91c1c";
   }
 }
 
@@ -2696,6 +2812,7 @@ function addManualAlias() {
   try {
     localStorage.setItem(STORAGE_KEY_ALIASES, JSON.stringify(manualAliases));
   } catch (e) {}
+  writeAliasesToCloud();
   document.getElementById("aliasFrom").value = "";
   document.getElementById("aliasTo").value = "";
   renderAliasList();
@@ -2708,6 +2825,7 @@ function removeAlias(fromKey) {
   try {
     localStorage.setItem(STORAGE_KEY_ALIASES, JSON.stringify(manualAliases));
   } catch (e) {}
+  writeAliasesToCloud();
   renderAliasList();
   populateFilterDropdowns();
   applyFilters();
@@ -2962,10 +3080,11 @@ function initTowerMap() {
 
 window.addEventListener("DOMContentLoaded", () => {
   loadState();
+  initFirebaseCloud();
   loadEmailConfig();
   populateFilterDropdowns();
   applyFilters();
-  document.getElementById("syncStatus").textContent = `Ready (${allPerformances.length} performances)`;
+  document.getElementById("syncStatus").textContent = `Connecting to cloud (${allPerformances.length} local performances)…`;
 });
 </script>
 </body>

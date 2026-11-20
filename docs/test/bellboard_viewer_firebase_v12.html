@@ -1,0 +1,3078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+<title>Bells</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --surface: #ffffff;
+    --surface-2: #f3efe8;
+    --border: #dfd8cc;
+    --text: #1e242b;
+    --muted: #5d6670;
+    --accent: #9a5b13;
+    --accent-soft: #f5eadc;
+    --peal: #7a2e1d;
+    --peal-bg: #f9eae6;
+    --qp: #1f5673;
+    --qp-bg: #e6f0f5;
+    --other: #4a5a43;
+    --other-bg: #ebf0e8;
+    --ok: #26643a;
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(30,36,43,0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    font-size: 14px;
+  }
+  h1, h2, h3, .serif { font-family: Georgia, "Palatino Linotype", "Book Antiqua", Palatino, serif; }
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .status-pill {
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 999px;
+  }
+  button, select, input, textarea {
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .btn {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .btn:hover { background: var(--surface-2); border-color: #c8beae; }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: #814b0e; border-color: #814b0e; }
+  .btn-delete {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+  }
+  .btn-delete:hover {
+    background: #fee2e2;
+    border-color: #f87171;
+  }
+  .btn-delete-solid {
+    background: #b91c1c;
+    color: #fff;
+    border-color: #b91c1c;
+  }
+  .btn-delete-solid:hover {
+    background: #991b1b;
+    border-color: #991b1b;
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .btn-sm { padding: 4px 8px; font-size: 12px; }
+
+  .container { max-width: 1360px; margin: 0 auto; padding: 18px 24px 48px; }
+
+  /* KPI Strip */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    box-shadow: var(--shadow);
+  }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+  .kpi-val { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 4px; color: var(--text); }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* Filter Bar */
+  .filter-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 10px;
+    align-items: end;
+  }
+  .filter-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .filter-group select, .filter-group input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .active-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid #e6cfa9;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .chip button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0;
+    line-height: 1;
+  }
+
+  /* Nav Tabs */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 18px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 9px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: -1px;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--surface-2); }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--accent);
+    border-color: var(--border);
+    border-bottom-color: var(--surface);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Cards & Tables */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .card-title { margin: 0; font-size: 17px; font-weight: 700; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  th {
+    background: var(--surface-2);
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  th:hover { color: var(--text); }
+  tr:hover td { background: #fcfaf7; }
+  td.num, th.num { text-align: right; }
+  .clickable {
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .clickable:hover { text-decoration: underline; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-peal { background: var(--peal-bg); color: var(--peal); }
+  .badge-qp { background: var(--qp-bg); color: var(--qp); }
+  .badge-other { background: var(--other-bg); color: var(--other); }
+  .badge-hand { background: #efe9f5; color: #56327a; }
+
+  /* Performance List */
+  .perf-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .perf-card.selected {
+    border-color: #dc2626;
+    background: #fffafa;
+  }
+  .perf-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .perf-top-left {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .perf-select-cb {
+    margin-top: 3px;
+    width: 16px;
+    height: 16px;
+    accent-color: #b91c1c;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .perf-top-right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+  .bulk-toolbar {
+    background: #fff8f8;
+    border: 1px solid #fecaca;
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  body.is-admin .bulk-toolbar {
+    display: flex;
+  }
+  .bulk-toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .bulk-count-pill {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .delete-preview-list {
+    max-height: 240px;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .delete-preview-item {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .delete-preview-item:last-child {
+    border-bottom: none;
+  }
+  .perf-assoc { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .perf-place { font-size: 16px; font-weight: 700; color: var(--text); }
+  .perf-meta { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .perf-method { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .perf-band {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+    margin: 8px 0;
+    padding: 8px 12px;
+    background: var(--bg);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  @media (max-width: 600px) {
+    .perf-band {
+      grid-template-columns: 1fr;
+      gap: 4px 0;
+    }
+  }
+  .ringer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .ringer-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13px;
+    min-width: 0;
+  }
+  .ringer-bell {
+    color: var(--muted);
+    width: 30px;
+    text-align: right;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .ringer-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .perf-footnotes { font-size: 13px; color: var(--text); margin-top: 6px; }
+  .perf-footnotes div { margin-top: 2px; }
+
+  /* Bell Rung Bars */
+  .bar-track {
+    background: var(--surface-2);
+    border-radius: 4px;
+    height: 16px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .bar-fill {
+    background: var(--accent);
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.25s ease;
+  }
+
+  /* Tower Circling Matrix */
+  .matrix-cell {
+    text-align: center;
+    min-width: 34px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 4px;
+  }
+  .cell-hit {
+    background: #e5f2e9;
+    color: var(--ok);
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .cell-hit:hover { background: #cfe8d7; }
+  .cell-miss {
+    background: #f9ecec;
+    color: #a63a3a;
+    border-radius: 4px;
+  }
+  .cell-na { color: #ccc; }
+
+  /* Year Circling Heatmap */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: 48px repeat(31, minmax(22px, 1fr));
+    gap: 2px;
+    font-size: 11px;
+    overflow-x: auto;
+  }
+  .cal-head { text-align: center; color: var(--muted); font-weight: 600; padding: 3px 0; }
+  .cal-month { font-weight: 700; color: var(--muted); display: flex; align-items: center; }
+  .cal-day {
+    aspect-ratio: 1;
+    min-height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+  }
+  .cal-day.invalid { background: transparent; border-color: transparent; }
+  .cal-day.hit-1 { background: #f2dec0; color: var(--text); border-color: #dfc092; cursor: pointer; font-weight: 600; }
+  .cal-day.hit-2 { background: #d99b4e; color: #fff; border-color: #c28336; cursor: pointer; font-weight: 700; }
+  .cal-day.hit-3 { background: #9a5b13; color: #fff; border-color: #7d480c; cursor: pointer; font-weight: 700; }
+
+  /* Modals & Admin */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px 24px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  }
+  .modal h3 { margin-top: 0; font-size: 19px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-field { display: flex; flex-direction: column; gap: 4px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .form-field input, .form-field select, .form-field textarea {
+    padding: 7px 9px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .admin-only { display: none !important; }
+  body.is-admin .admin-only { display: inline-flex !important; }
+  body.is-admin .admin-block { display: block !important; }
+  .admin-block { display: none !important; }
+
+  .banner {
+    background: #eef7f0;
+    border: 1px solid #b8dec2;
+    color: #1e5631;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .banner.show { display: flex; }
+
+  .tower-map {
+    width: 100%;
+    height: min(72vh, 720px);
+    min-height: 440px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    z-index: 0;
+  }
+  .map-note, .map-status { color: var(--muted); font-size: 13px; margin: 8px 0 12px; }
+  .tower-bell-marker {
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #8c5317; color: #fff; border: 2px solid #fff;
+    box-shadow: 0 1px 5px rgba(0,0,0,.35); font-weight: 800; font-size: 12px;
+  }
+  .tower-popup-title { font-weight: 700; font-size: 14px; }
+  .tower-popup-detail { margin-top: 3px; color: #5d6670; }
+  .step-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Thomas W Green</h1>
+  </div>
+  <div class="header-actions">
+    <span class="status-pill" id="syncStatus">Ready</span>
+    <button class="btn btn-primary admin-only" id="btnSyncNow" onclick="syncBellBoard(true)">Sync Now</button>
+    <button class="btn admin-only" onclick="openModal('manualModal')">+ Add Performance</button>
+    <button class="btn admin-only" onclick="openModal('importModal')">Import XML</button>
+    <button class="btn" onclick="openModal('emailModal')">Email Alerts</button>
+    <button class="btn" id="btnAdminToggle" onclick="toggleAdminMode()">Admin Login</button>
+  </div>
+</header>
+
+<div class="container">
+  <div class="banner" id="newPerfBanner">
+    <span id="newPerfText">New performances synced!</span>
+    <div style="display:flex;gap:8px;">
+      <a class="btn btn-sm btn-primary" id="mailtoFallbackLink" href="#">Draft Email Notification</a>
+      <button class="btn btn-sm" onclick="document.getElementById('newPerfBanner').classList.remove('show')">Dismiss</button>
+    </div>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Performances</div>
+      <div class="kpi-val" id="kpiTotal">0</div>
+      <div class="kpi-sub" id="kpiDateSpan">-</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Peals (5000+)</div>
+      <div class="kpi-val" id="kpiPeals">0</div>
+      <div class="kpi-sub" id="kpiPealsCond">0 conducted</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Quarter Peals (1250-4999)</div>
+      <div class="kpi-val" id="kpiQPs">0</div>
+      <div class="kpi-sub" id="kpiQPsCond">0 conducted</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Conducted (C)</div>
+      <div class="kpi-val" id="kpiConducted">0</div>
+      <div class="kpi-sub" id="kpiOtherCount">0 other performances</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Unique Towers</div>
+      <div class="kpi-val" id="kpiTowers">0</div>
+      <div class="kpi-sub" id="kpiCircledCount">0 circled</div>
+    </div>
+  </div>
+
+  <!-- Global Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label for="fLength">Length</label>
+        <select id="fLength" onchange="applyFilters()">
+          <option value="all">All lengths</option>
+          <option value="peal">Peals (5000+)</option>
+          <option value="qp">Quarter Peals (1250-4999)</option>
+          <option value="other">Other (&lt;1250)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fType">Type of Performance</label>
+        <select id="fType" onchange="applyFilters()">
+          <option value="all">All types</option>
+          <option value="tower">Tower Bells</option>
+          <option value="hand">Handbells</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fYear">Year</label>
+        <select id="fYear" onchange="applyFilters()">
+          <option value="all">All years</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fTower">Tower</label>
+        <select id="fTower" onchange="applyFilters()">
+          <option value="all">All towers</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fAssoc">Association</label>
+        <select id="fAssoc" onchange="applyFilters()">
+          <option value="all">All associations</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fRinger">Other Ringer</label>
+        <select id="fRinger" onchange="applyFilters()">
+          <option value="all">Any ringer</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fConductor">Conductor</label>
+        <select id="fConductor" onchange="applyFilters()">
+          <option value="all">Any conductor</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fBell">Bell Rung</label>
+        <select id="fBell" onchange="applyFilters()">
+          <option value="all">Any bell</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="fSearch">Search</label>
+        <input type="text" id="fSearch" placeholder="Method, footnote, place..." oninput="applyFilters()">
+      </div>
+    </div>
+    <div class="active-chips" id="activeChips"></div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview')">Overview</button>
+    <button class="tab-btn" data-tab="performances" onclick="switchTab('performances')">Performances (<span id="tabPerfCount">0</span>)</button>
+    <button class="tab-btn" data-tab="ringers" onclick="switchTab('ringers')">Ringers &amp; Conductors</button>
+    <button class="tab-btn" data-tab="towers" onclick="switchTab('towers')">Towers &amp; Associations</button>
+    <button class="tab-btn" data-tab="bells" onclick="switchTab('bells')">Bells &amp; Tower Circling</button>
+    <button class="tab-btn" data-tab="yearcircling" onclick="switchTab('yearcircling')">Year Circling</button>
+    <button class="tab-btn" data-tab="towermap" onclick="switchTab('towermap')">Tower Map</button>
+  </div>
+
+  <!-- TAB 1: OVERVIEW -->
+  <div class="tab-panel active" id="tab-overview">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Performances by Year</h2>
+        </div>
+        <div class="table-wrap">
+          <table id="tblYears">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th class="num">Total</th>
+                <th class="num">Peals</th>
+                <th class="num">Quarters</th>
+                <th class="num">Other</th>
+                <th class="num">Conducted</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Bell Rung</h2>
+          <div>
+            <select id="bellStageFilter" onchange="renderBellRung()">
+              <option value="all">All Stages</option>
+              <option value="5">Doubles (5/6)</option>
+              <option value="6">Minor (6)</option>
+              <option value="7">Triples (7/8)</option>
+              <option value="8">Major (8)</option>
+              <option value="9">Caters (9/10)</option>
+              <option value="10">Royal (10)</option>
+              <option value="11">Cinques (11/12)</option>
+              <option value="12">Maximus (12)</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="tblBellsOverview">
+            <thead>
+              <tr>
+                <th>Bell</th>
+                <th class="num">Total</th>
+                <th class="num">Peals</th>
+                <th class="num">Quarters</th>
+                <th class="num">Other</th>
+                <th style="width:32%;">Share</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Recent Performances</h2>
+        <button class="btn btn-sm" onclick="switchTab('performances')">View All Performances</button>
+      </div>
+      <div id="recentPerfList"></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: PERFORMANCES -->
+  <div class="tab-panel" id="tab-performances">
+    <div class="card" style="padding:10px 16px;">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;">
+        <div>Showing <strong id="perfShowingCount">0</strong> matching performances</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <label for="sortOrder" style="font-size:12px;color:var(--muted);font-weight:600;">SORT BY:</label>
+          <select id="sortOrder" onchange="renderPerformances()">
+            <option value="date-desc">Date (Newest first)</option>
+            <option value="date-asc">Date (Oldest first)</option>
+            <option value="changes-desc">Changes (Most first)</option>
+            <option value="changes-asc">Changes (Fewest first)</option>
+            <option value="dur-desc">Duration (Longest first)</option>
+            <option value="dur-asc">Duration (Shortest first)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Bulk Selection & Mass Delete Toolbar -->
+    <div class="bulk-toolbar" id="bulkToolbar">
+      <div class="bulk-toolbar-group">
+        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;color:#7f1d1d;font-size:13px;">
+          <input type="checkbox" id="bulkSelectAllCb" onchange="toggleSelectAllFiltered(this.checked)" style="width:15px;height:15px;accent-color:#b91c1c;cursor:pointer;">
+          Select All Filtered (<span id="bulkFilteredCount">0</span>)
+        </label>
+        <button class="btn btn-sm" id="btnSelectAllDataset" onclick="selectAllDataset()">Select All (<span id="bulkTotalDatasetCount">0</span>)</button>
+        <button class="btn btn-sm" id="btnClearSelection" onclick="clearPerformanceSelection()" disabled>Clear Selection</button>
+        <span class="bulk-count-pill" id="bulkSelectedBadge">0 selected</span>
+      </div>
+      <div class="bulk-toolbar-group">
+        <button class="btn btn-sm btn-delete" id="btnDeleteAllFiltered" onclick="requestDeleteFiltered()">Delete All Filtered (<span id="bulkDeleteFilteredCount">0</span>)</button>
+        <button class="btn btn-sm btn-delete-solid" id="btnDeleteSelected" onclick="requestDeleteSelected()" disabled>Delete Selected (<span id="bulkDeleteSelectedCount">0</span>)</button>
+      </div>
+    </div>
+
+    <div id="perfListContainer"></div>
+  </div>
+
+  <!-- TAB 3: RINGERS & CONDUCTORS -->
+  <div class="tab-panel" id="tab-ringers">
+    <div class="card admin-block" id="aliasManagerCard">
+      <div class="card-header">
+        <h2 class="card-title">Ringer Name Aliases &amp; Merge Manager</h2>
+      </div>
+      <p style="margin-top:0;color:var(--muted);font-size:13px;">Map variant spellings, middle initials, or shortened first names to a single canonical ringer name across all current and future performances.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+        <input type="text" id="aliasFrom" placeholder="Variant name on BellBoard" style="flex:1;min-width:190px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;">
+        <input type="text" id="aliasTo" placeholder="Canonical ringer name" style="flex:1;min-width:190px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;">
+        <button class="btn btn-primary" onclick="addManualAlias()">Add Alias Rule</button>
+      </div>
+      <div id="aliasListWrap" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Other Ringers</h2>
+          <input type="text" id="searchRingersTbl" placeholder="Filter ringers..." oninput="renderRingersTables()" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;">
+        </div>
+        <div class="table-wrap">
+          <table id="tblRingers">
+            <thead>
+              <tr>
+                <th onclick="sortTable('ringers','name')">Ringer</th>
+                <th class="num" onclick="sortTable('ringers','total')">Total</th>
+                <th class="num" onclick="sortTable('ringers','peals')">Peals</th>
+                <th class="num" onclick="sortTable('ringers','qps')">Quarters</th>
+                <th class="num" onclick="sortTable('ringers','other')">Other</th>
+                <th class="num" onclick="sortTable('ringers','cond')">As (C)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Conductors</h2>
+          <input type="text" id="searchCondTbl" placeholder="Filter conductors..." oninput="renderRingersTables()" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;">
+        </div>
+        <div class="table-wrap">
+          <table id="tblConductors">
+            <thead>
+              <tr>
+                <th onclick="sortTable('conductors','name')">Conductor</th>
+                <th class="num" onclick="sortTable('conductors','total')">Total</th>
+                <th class="num" onclick="sortTable('conductors','peals')">Peals</th>
+                <th class="num" onclick="sortTable('conductors','qps')">Quarters</th>
+                <th class="num" onclick="sortTable('conductors','other')">Other</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: TOWERS & ASSOCIATIONS -->
+  <div class="tab-panel" id="tab-towers">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Towers &amp; Venues</h2>
+          <input type="text" id="searchTowersTbl" placeholder="Filter towers..." oninput="renderTowersAssocTables()" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;">
+        </div>
+        <div class="table-wrap">
+          <table id="tblTowers">
+            <thead>
+              <tr>
+                <th onclick="sortTable('towers','label')">Tower / Venue</th>
+                <th class="num" onclick="sortTable('towers','total')">Total</th>
+                <th class="num" onclick="sortTable('towers','peals')">Peals</th>
+                <th class="num" onclick="sortTable('towers','qps')">Quarters</th>
+                <th class="num" onclick="sortTable('towers','other')">Other</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Associations &amp; Societies</h2>
+          <input type="text" id="searchAssocTbl" placeholder="Filter associations..." oninput="renderTowersAssocTables()" style="padding:5px 8px;border:1px solid var(--border);border-radius:6px;">
+        </div>
+        <div class="table-wrap">
+          <table id="tblAssocs">
+            <thead>
+              <tr>
+                <th onclick="sortTable('assocs','name')">Association</th>
+                <th class="num" onclick="sortTable('assocs','total')">Total</th>
+                <th class="num" onclick="sortTable('assocs','peals')">Peals</th>
+                <th class="num" onclick="sortTable('assocs','qps')">Quarters</th>
+                <th class="num" onclick="sortTable('assocs','other')">Other</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: BELLS & TOWER CIRCLING -->
+  <div class="tab-panel" id="tab-bells">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Tower Circling Tracker</h2>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <select id="circlingScope" onchange="renderCirclingMatrix()">
+            <option value="all">All Tower Performances</option>
+            <option value="peal">Peals Only</option>
+            <option value="qp">Quarter Peals Only</option>
+          </select>
+          <select id="circlingStatusFilter" onchange="renderCirclingMatrix()">
+            <option value="all">All Towers</option>
+            <option value="circled">Circled Only</option>
+            <option value="uncircled">Uncircled Only</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="tblCircling">
+          <thead>
+            <tr>
+              <th>Tower (Place - Dedication)</th>
+              <th class="num">Bells</th>
+              <th class="num">Rung</th>
+              <th>Status</th>
+              <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+              <th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 6: YEAR CIRCLING -->
+  <div class="tab-panel" id="tab-yearcircling">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Year Circling (366-Day Calendar)</h2>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span id="yearCircleStats" style="font-weight:600;color:var(--accent);">0 / 366 days rung</span>
+          <select id="yearCircleScope" onchange="renderYearCircling()">
+            <option value="all">All Performances</option>
+            <option value="peal">Peals Only</option>
+            <option value="qp">Quarter Peals Only</option>
+          </select>
+        </div>
+      </div>
+      <div class="cal-grid" id="yearCalGrid"></div>
+    </div>
+  </div>
+
+  <!-- TAB 7: TOWER MAP -->
+  <div class="tab-panel" id="tab-towermap">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Interactive Tower Map</h2>
+      </div>
+      <div id="towerMap" class="tower-map" role="application" aria-label="Map of towers visited"></div>
+      <div id="towerMapStatus" class="map-status" aria-live="polite">Map will load when this tab is opened.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADMIN LOGIN -->
+<div class="modal-backdrop" id="adminLoginModal">
+  <div class="modal" style="max-width:400px;">
+    <h3>Admin Access</h3>
+    <p style="color:var(--muted);font-size:13px;">Sign in with your Firebase admin email and password to unlock editing and syncing.</p>
+    <div class="form-field" style="margin-bottom:14px;">
+      <label for="adminEmailInput">Email</label>
+      <input type="email" id="adminEmailInput" placeholder="Admin email" autocomplete="username">
+    </div>
+    <div class="form-field" style="margin-bottom:14px;">
+      <label for="adminPasswordInput">Password</label>
+      <input type="password" id="adminPasswordInput" placeholder="Firebase password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitAdminLogin()">
+    </div>
+    <div id="adminLoginError" style="color:#b91c1c;font-size:13px;margin-bottom:10px;"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn" onclick="closeModal('adminLoginModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAdminLogin()">Sign in</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DELETE PERFORMANCE CONFIRMATION -->
+<div class="modal-backdrop" id="deleteConfirmModal">
+  <div class="modal" style="max-width:520px;">
+    <h3 id="deleteModalTitle">Delete Performance</h3>
+    <p id="deleteModalDesc" style="color:var(--muted);font-size:13px;margin-bottom:12px;">Are you sure you want to permanently delete this performance? This action cannot be undone.</p>
+    <div id="deletePerfSummary" class="delete-preview-list"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn" onclick="closeModal('deleteConfirmModal')">Cancel</button>
+      <button class="btn btn-delete-solid" id="btnConfirmDelete" style="font-weight:600;" onclick="confirmDeletePerformances()">Delete Permanently</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADD MANUAL PERFORMANCE -->
+<div class="modal-backdrop" id="manualModal">
+  <div class="modal">
+    <h3>Add Performance Manually</h3>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Date (YYYY-MM-DD) *</label>
+        <input type="date" id="mDate" required>
+      </div>
+      <div class="form-field">
+        <label>Type of Performance *</label>
+        <select id="mMedium">
+          <option value="tower">Tower Bells</option>
+          <option value="hand">Handbells</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Place / Locality *</label>
+        <input type="text" id="mPlace" placeholder="e.g. Cambridge">
+      </div>
+      <div class="form-field">
+        <label>County</label>
+        <input type="text" id="mCounty" placeholder="e.g. Cambridgeshire">
+      </div>
+      <div class="form-field">
+        <label>Dedication (or Handbell Address) *</label>
+        <input type="text" id="mDedication" placeholder="e.g. St Mary the Great or 41, Haddon Crescent">
+      </div>
+      <div class="form-field">
+        <label>Tenor Weight &amp; Key</label>
+        <input type="text" id="mTenor" placeholder="e.g. 29-3-26 in D">
+      </div>
+      <div class="form-field">
+        <label>Association</label>
+        <input type="text" id="mAssoc" placeholder="e.g. Cambridge University Guild">
+      </div>
+      <div class="form-field">
+        <label>Duration</label>
+        <input type="text" id="mDuration" placeholder="e.g. 45m or 2h 56">
+      </div>
+      <div class="form-field">
+        <label>Changes</label>
+        <input type="number" id="mChanges" placeholder="e.g. 1260">
+      </div>
+      <div class="form-field">
+        <label>Method *</label>
+        <input type="text" id="mMethod" placeholder="e.g. Cambridge Surprise Major">
+      </div>
+      <div class="form-field full">
+        <label>Band (one per line: Bell Ringer [(C)]) *</label>
+        <textarea id="mBand" rows="6" placeholder="1 Clare E Moon&#10;2 Claire M Goodger&#10;3 Joel A Cairns&#10;4 John M Constable&#10;5 Thomas W Green (C)&#10;6 Charlotte D Linford"></textarea>
+      </div>
+      <div class="form-field full">
+        <label>Footnotes (one per line)</label>
+        <textarea id="mFootnotes" rows="2" placeholder="First in method: 4."></textarea>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+      <button class="btn" onclick="closeModal('manualModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveManualPerformance()">Save Performance</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: IMPORT XML / HTML -->
+<div class="modal-backdrop" id="importModal">
+  <div class="modal">
+    <h3>Import All BellBoard Performances</h3>
+    <div class="step-box">
+      <strong>How to import all your performances at once (bypasses browser CORS):</strong>
+      <ol style="margin:6px 0 0 18px;padding:0;">
+        <li>Open your BellBoard XML export in a new browser tab:
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;">
+            <a class="btn btn-sm btn-primary" href="https://bb.ringingworld.co.uk/export.php?fmt=xml&ringer=thomas+w+green&pagesize=2000" target="_blank" rel="noopener">1. Open Full BellBoard XML Export ↗</a>
+            <a class="btn btn-sm" href="https://bb.ringingworld.co.uk/export.php?fmt=xml&ringer=thomas+w+green&page=2" target="_blank" rel="noopener">Page 2 (if &gt;200) ↗</a>
+          </div>
+        </li>
+        <li>Press <strong>Ctrl+S</strong> (or <strong>Cmd+S</strong>) to save the XML file (or <strong>Ctrl+A</strong> then <strong>Ctrl+C</strong> to copy it).</li>
+        <li>Select the saved file(s) below (multiple files supported) or paste the XML/HTML below.</li>
+      </ol>
+    </div>
+    <div class="form-field" style="margin-bottom:12px;">
+      <label>Select one or more .xml / .html files</label>
+      <input type="file" id="xmlFileInput" accept=".xml,.html,.htm,.txt,text/xml,text/html" multiple onchange="handleXmlFileUpload(event)">
+    </div>
+    <div class="form-field" style="margin-bottom:12px;">
+      <label>Or paste XML / BellBoard page source</label>
+      <textarea id="xmlPasteInput" rows="6" placeholder="Paste XML from export.php here..."></textarea>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn" onclick="closeModal('importModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="importPastedXml()">Import &amp; Deduplicate</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EMAIL ALERTS -->
+<div class="modal-backdrop" id="emailModal">
+  <div class="modal">
+    <h3>New Performance Email Alerts</h3>
+    <p style="color:var(--muted);font-size:13px;">Configure automatic email notifications whenever a new performance is detected during BellBoard syncs.</p>
+    <div class="form-grid">
+      <div class="form-field full">
+        <label>Recipient Email</label>
+        <input type="email" id="emailRecipient" value="thomaswilliamgreen18@gmail.com">
+      </div>
+      <div class="form-field">
+        <label>Auto-Check Interval</label>
+        <select id="emailInterval">
+          <option value="0">On page load only</option>
+          <option value="15">Every 15 minutes</option>
+          <option value="30">Every 30 minutes</option>
+          <option value="60">Every 60 minutes</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Delivery Method</label>
+        <select id="emailProvider">
+          <option value="mailto">Browser Banner + Mailto Draft</option>
+          <option value="webhook">Custom Webhook URL (POST JSON)</option>
+          <option value="emailjs">EmailJS REST API</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label>Webhook URL / EmailJS Service+Template+PublicKey (pipe-separated)</label>
+        <input type="text" id="emailEndpoint" placeholder="https://hook.example.com/... or service_id|template_id|public_key">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+      <button class="btn" onclick="triggerTestEmail()">Send Test Alert</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="closeModal('emailModal')">Close</button>
+        <button class="btn btn-primary" onclick="saveEmailConfig()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+const TARGET_RINGER = "Thomas W Green";
+const STORAGE_KEY_PERFS = "twg_bb_performances_v4";
+const STORAGE_KEY_ALIASES = "twg_bb_aliases_v4";
+const STORAGE_KEY_EMAIL = "twg_bb_email_v4";
+const STORAGE_KEY_PIN = "twg_bb_admin_pin_v4";
+
+// Firebase project: bb-viewer
+const firebaseConfig = {
+  apiKey: "AIzaSyDRHH_yQA0f7yjil3svkOof4xv3GaxlGvs",
+  authDomain: "bb-viewer.firebaseapp.com",
+  projectId: "bb-viewer",
+  storageBucket: "bb-viewer.firebasestorage.app",
+  messagingSenderId: "966648387518",
+  appId: "1:966648387518:web:dfaf03932e1d0a6df80bef"
+};
+let firebaseApp = null, firebaseAuth = null, firestoreDb = null;
+let cloudPerfUnsubscribe = null, cloudAliasUnsubscribe = null;
+let cloudReady = false, cloudPerfLoaded = false, cloudAliasesLoaded = false;
+let cloudWriteBusy = false;
+const CLOUD_PERFS_COLLECTION = "performances";
+const CLOUD_ALIASES_DOC = "settings/aliases";
+const CLOUD_PERF_STATE_DOC = "settings/performanceSync";
+let cloudPerfSyncInitialized = false;
+function initFirebaseCloud() {
+  try {
+    if (!firebase.apps.length) firebaseApp = firebase.initializeApp(firebaseConfig); else firebaseApp = firebase.app();
+    firebaseAuth = firebaseApp.auth(); firestoreDb = firebaseApp.firestore();
+    // Public read listeners; Firestore rules restrict writes to the admin UID.
+    cloudPerfUnsubscribe = firestoreDb.collection(CLOUD_PERFS_COLLECTION).onSnapshot(snapshot => {
+      cloudPerfLoaded = true;
+      if (!snapshot.empty) {
+        const cloudList = snapshot.docs.map(d => d.data()).filter(x => x && x.id);
+        allPerformances = deduplicatePerformances(cloudList);
+        try { localStorage.setItem(STORAGE_KEY_PERFS, JSON.stringify(allPerformances)); } catch(e) {}
+        renderAfterCloudLoad();
+      } else if (cloudPerfLoaded) {
+        // Once cloud sync is initialized, an empty collection is a real empty dataset.
+        if (cloudPerfSyncInitialized) {
+          allPerformances = [];
+          try { localStorage.setItem(STORAGE_KEY_PERFS, "[]"); } catch(e) {}
+        }
+        renderAfterCloudLoad();
+      }
+      cloudReady = cloudPerfLoaded && cloudAliasesLoaded;
+      setCloudStatus();
+    }, err => { console.warn("Firestore performances listener:", err); setCloudStatus("Cloud read error: " + err.message); });
+    firestoreDb.doc(CLOUD_PERF_STATE_DOC).onSnapshot(doc => {
+      cloudPerfSyncInitialized = !!(doc.exists && doc.data().initialized);
+    }, err => console.warn("Firestore performance sync state:", err));
+    cloudAliasUnsubscribe = firestoreDb.doc(CLOUD_ALIASES_DOC).onSnapshot(doc => {
+      cloudAliasesLoaded = true;
+      if (doc.exists && doc.data().aliases) {
+        manualAliases = { ...DEFAULT_ALIASES, ...doc.data().aliases };
+        try { localStorage.setItem(STORAGE_KEY_ALIASES, JSON.stringify(manualAliases)); } catch(e) {}
+        renderAliasList(); populateFilterDropdowns(); applyFilters();
+      }
+      cloudReady = cloudPerfLoaded && cloudAliasesLoaded; setCloudStatus();
+    }, err => { console.warn("Firestore aliases listener:", err); setCloudStatus("Cloud read error: " + err.message); });
+  } catch (err) { console.error("Firebase init failed:", err); setCloudStatus("Firebase connection failed: " + err.message); }
+}
+function renderAfterCloudLoad() { populateFilterDropdowns(); applyFilters(); }
+function setCloudStatus(message) { const el=document.getElementById("syncStatus"); if (el) el.textContent = message || (cloudReady ? `Cloud connected (${allPerformances.length} performances)` : "Connecting to cloud…"); }
+async function writePerformancesToCloud() {
+  if (!firestoreDb || !firebaseAuth?.currentUser || !isAdmin || cloudWriteBusy) return;
+  cloudWriteBusy = true;
+  try {
+    const col = firestoreDb.collection(CLOUD_PERFS_COLLECTION);
+    const existing = await col.get();
+    const desired = new Map(allPerformances.map(p => [String(p.id), p]));
+    const batches = []; let batch = firestoreDb.batch(), count = 0;
+    existing.docs.forEach(d => { if (!desired.has(d.id)) { batch.delete(d.ref); count++; } });
+    desired.forEach((perf, id) => { batch.set(col.doc(id), perf); count++; });
+    // Firestore batch maximum is 500 operations; use conservative chunks via operations list.
+    const ops = []; existing.docs.forEach(d => { if (!desired.has(d.id)) ops.push({type:"delete",ref:d.ref}); });
+    desired.forEach((perf,id)=>ops.push({type:"set",ref:col.doc(id),data:perf}));
+    for (let i=0;i<ops.length;i+=400) { const b=firestoreDb.batch(); ops.slice(i,i+400).forEach(op=>op.type==="delete"?b.delete(op.ref):b.set(op.ref,op.data)); batches.push(b); }
+    for (const b of batches) await b.commit();
+    await firestoreDb.doc(CLOUD_PERF_STATE_DOC).set({initialized:true, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    cloudPerfSyncInitialized = true;
+    setCloudStatus(`Saved to cloud (${allPerformances.length} performances)`);
+  } catch(err) { console.error("Cloud performance save:",err); setCloudStatus("Cloud save failed: " + err.message); }
+  finally { cloudWriteBusy = false; }
+}
+async function writeAliasesToCloud() {
+  if (!firestoreDb || !firebaseAuth?.currentUser || !isAdmin) return;
+  try { await firestoreDb.doc(CLOUD_ALIASES_DOC).set({aliases: manualAliases, updatedAt: firebase.firestore.FieldValue.serverTimestamp()}); }
+  catch(err) { console.error("Cloud aliases save:",err); setCloudStatus("Alias cloud save failed: " + err.message); }
+}
+
+
+const SEED_PERFORMANCES = [
+  {
+    id: "bb-seed-2019-04-06",
+    association: "Ely Diocesan Association",
+    place: "Trumpington",
+    county: "Cambridgeshire",
+    dedication: "St Mary and St Michael",
+    date: "2019-04-06",
+    duration: "42m",
+    tenor: "10-2-22 in G",
+    changes: 1260,
+    method: "Plain Bob Minor",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Thomas W Green", conductor: false },
+      { bell: "2", name: "Christine C L Seaman", conductor: false },
+      { bell: "3", name: "Ian W Davies", conductor: false },
+      { bell: "4", name: "Mark H Norris", conductor: false },
+      { bell: "5", name: "Richard Green", conductor: true },
+      { bell: "6", name: "Greg J Pearce", conductor: false }
+    ],
+    footnotes: ["First quarter at first attempt: treble (aged 12).", "First quarter for three years: 3."]
+  },
+  {
+    id: "bb-seed-2019-07-28",
+    association: "Ely Diocesan Association",
+    place: "Trumpington",
+    county: "Cambridgeshire",
+    dedication: "St Mary and St Michael",
+    date: "2019-07-28",
+    duration: "44m",
+    tenor: "10-2-22 in G",
+    changes: 1272,
+    method: "Cambridge Surprise Minor",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Jenny M J Goodwin", conductor: false },
+      { bell: "2", name: "Stephen C Theobald", conductor: false },
+      { bell: "3", name: "Thomas W Green", conductor: false },
+      { bell: "4", name: "Robert B S Oakeshott", conductor: false },
+      { bell: "5", name: "Greg J Pearce", conductor: true },
+      { bell: "6", name: "Stephen P Burr", conductor: false }
+    ],
+    footnotes: ["First quarter peal inside, first touch of Surprise and second quarter peal ever: 3 (aged 12)."]
+  },
+  {
+    id: "bb-seed-2020-01-19",
+    association: "",
+    place: "Trumpington",
+    county: "Cambridgeshire",
+    dedication: "St Mary and St Michael",
+    date: "2020-01-19",
+    duration: "42m",
+    tenor: "10-2-22 in G",
+    changes: 1250,
+    method: "Yorkshire Surprise Major",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Ian W Davies", conductor: false },
+      { bell: "2", name: "Richard Green", conductor: false },
+      { bell: "3", name: "Sharon R Stimpson", conductor: false },
+      { bell: "4", name: "Greg J Pearce", conductor: false },
+      { bell: "5", name: "Stephen P Burr", conductor: false },
+      { bell: "6", name: "Thomas W Green", conductor: false },
+      { bell: "7", name: "Mark H Norris", conductor: true },
+      { bell: "8", name: "Christine C L Seaman", conductor: false }
+    ],
+    footnotes: ["First on eight bells - 6"]
+  },
+  {
+    id: "bb-seed-2026-02-07-clifton",
+    association: "Nottingham University Society",
+    place: "Clifton",
+    county: "Nottinghamshire",
+    dedication: "St Mary the Virgin",
+    date: "2026-02-07",
+    duration: "2h 31",
+    tenor: "8-0-8 in A♯",
+    changes: 5040,
+    method: "Minor (3m)",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Clare E Moon", conductor: false },
+      { bell: "2", name: "Claire M Goodger", conductor: false },
+      { bell: "3", name: "Joel A Cairns", conductor: false },
+      { bell: "4", name: "John M Constable", conductor: false },
+      { bell: "5", name: "Thomas W Green", conductor: true },
+      { bell: "6", name: "Charlotte D Linford", conductor: false }
+    ],
+    footnotes: ["First peal at the first attempt: 4.", "First for the Society: 1, 5."]
+  },
+  {
+    id: "bb-seed-2026-02-27-edwalton",
+    association: "Nottingham University Society",
+    place: "Edwalton",
+    county: "Nottinghamshire",
+    dedication: "Holy Rood",
+    date: "2026-02-27",
+    duration: "2h 18",
+    tenor: "5-1-1 in B",
+    changes: 5040,
+    method: "Minor (7m)",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Andrew J Cairns", conductor: false },
+      { bell: "2", name: "Benjamin D Kipling", conductor: false },
+      { bell: "3", name: "Claire M Goodger", conductor: false },
+      { bell: "4", name: "John M Constable", conductor: false },
+      { bell: "5", name: "Thomas W Green", conductor: false },
+      { bell: "6", name: "Colin M Lee", conductor: true }
+    ],
+    footnotes: ["To mark the start of NUSCR dinner weekend."]
+  },
+  {
+    id: "bb-seed-2026-05-24-stpeter",
+    association: "Nottingham University Society",
+    place: "Nottingham",
+    county: "Nottinghamshire",
+    dedication: "St Peter",
+    date: "2026-05-24",
+    duration: "41m",
+    tenor: "8-2-6 in B♭",
+    changes: 1260,
+    method: "Plain Bob Doubles",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Madeleine R Jefferis", conductor: false },
+      { bell: "2", name: "John M Constable", conductor: true },
+      { bell: "3", name: "Charlie Linford", conductor: false },
+      { bell: "4", name: "Will Balkwill-Western", conductor: false },
+      { bell: "5", name: "Thomas W Green", conductor: false },
+      { bell: "6", name: "Eleanor Lucas", conductor: false }
+    ],
+    footnotes: ["1st inside - 4.", "1st as conductor."]
+  },
+  {
+    id: "bb-seed-2026-10-17-sunnyside",
+    association: "Nottingham University Society",
+    place: "Beeston",
+    county: "Nottinghamshire",
+    dedication: "1, Sunnyside Road",
+    date: "2026-10-17",
+    duration: "",
+    tenor: "",
+    changes: 1344,
+    method: "Yorkshire Surprise Major",
+    medium: "hand",
+    band: [
+      { bell: "1-2", name: "Emily E Hall", conductor: false },
+      { bell: "3-4", name: "Christopher J Field", conductor: false },
+      { bell: "5-6", name: "Adam Wilmott", conductor: true },
+      { bell: "7-8", name: "Thomas W Green", conductor: false }
+    ],
+    footnotes: ["First major in hand: 7-8."]
+  },
+  {
+    id: "bb-seed-2026-11-01-stpeter",
+    association: "Nottingham University Society",
+    place: "Nottingham",
+    county: "Nottinghamshire",
+    dedication: "St Peter",
+    date: "2026-11-01",
+    duration: "3h 18",
+    tenor: "22-2-5 in E♭",
+    changes: 5042,
+    method: "Yorkshire Surprise Maximus",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Charlotte D Linford", conductor: false },
+      { bell: "2", name: "Estella J Haynes", conductor: false },
+      { bell: "3", name: "Laura S Watt", conductor: false },
+      { bell: "4", name: "Sarah H Robbins", conductor: false },
+      { bell: "5", name: "Natasha Claus", conductor: false },
+      { bell: "6", name: "Thomas W Green", conductor: false },
+      { bell: "7", name: "Daniel J Page", conductor: true },
+      { bell: "8", name: "Michael A Varney", conductor: false },
+      { bell: "9", name: "Evie Newton", conductor: false },
+      { bell: "10", name: "Adam Wilmott", conductor: false },
+      { bell: "11", name: "Emily E Hall", conductor: false },
+      { bell: "12", name: "Edward A S Walker", conductor: false }
+    ],
+    footnotes: ["Rung by an under 30s band.", "First on 12: 10.", "First Maximus: 6.", "First for the Society: 4."]
+  },
+  {
+    id: "bb-seed-2026-11-06-wollaton",
+    association: "Nottingham University Society",
+    place: "Wollaton",
+    county: "Nottinghamshire",
+    dedication: "St Leonard",
+    date: "2026-11-06",
+    duration: "2h 30",
+    tenor: "5-1-23 in A",
+    changes: 5040,
+    method: "Minor (11m)",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Adrian P Sweeting", conductor: false },
+      { bell: "2", name: "Colin M Lee", conductor: false },
+      { bell: "3", name: "Andrew R Wignell", conductor: false },
+      { bell: "4", name: "John M Constable", conductor: false },
+      { bell: "5", name: "Thomas W Green", conductor: true },
+      { bell: "6", name: "Hayley J Wells", conductor: false }
+    ],
+    footnotes: ["Most methods to a peal: 4, 5, 6.", "Rung as part of NUSCR Autumn Ringing Weekend."]
+  },
+  {
+    id: "bb-seed-2026-11-07-buckminster",
+    association: "Nottingham University Society",
+    place: "Buckminster",
+    county: "Leicestershire",
+    dedication: "St John the Baptist",
+    date: "2026-11-07",
+    duration: "2h 52",
+    tenor: "9-3-4 in G",
+    changes: 5040,
+    method: "Doubles and Minor (14m)",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Adam Wilmott", conductor: false },
+      { bell: "2", name: "Adrian P Sweeting", conductor: false },
+      { bell: "3", name: "Colin M Lee", conductor: true },
+      { bell: "4", name: "Andrew J Cairns", conductor: false },
+      { bell: "5", name: "Thomas W Green", conductor: false },
+      { bell: "6", name: "Emily E Hall", conductor: false }
+    ],
+    footnotes: ["Part of NUSCR ringing weekend."]
+  },
+  {
+    id: "bb-seed-2026-11-08-beeston",
+    association: "Nottingham University Society",
+    place: "Beeston",
+    county: "Nottinghamshire",
+    dedication: "St John the Baptist",
+    date: "2026-11-08",
+    duration: "2h 56",
+    tenor: "17-1-14 in E",
+    changes: 5040,
+    method: "Swindon Surprise Royal",
+    medium: "tower",
+    band: [
+      { bell: "1", name: "Colin M Lee", conductor: true },
+      { bell: "2", name: "Emily E Hall", conductor: false },
+      { bell: "3", name: "Adam Wilmott", conductor: false },
+      { bell: "4", name: "Thomas W Green", conductor: false },
+      { bell: "5", name: "Joel A Cairns", conductor: false },
+      { bell: "6", name: "Cameron K H Lee", conductor: false },
+      { bell: "7", name: "Hayley J Wells", conductor: false },
+      { bell: "8", name: "Marcus T Ham", conductor: false },
+      { bell: "9", name: "Daniel J Page", conductor: false },
+      { bell: "10", name: "Edward A S Walker", conductor: false }
+    ],
+    footnotes: ["First on ten: 6.", "Part of NUSCR ringing weekend."]
+  }
+];
+
+const DEFAULT_ALIASES = {
+  "Charlie Linford": "Charlotte D Linford",
+  "Charlotte Linford": "Charlotte D Linford",
+  "Charlie D Linford": "Charlotte D Linford",
+  "Tom W Green": "Thomas W Green",
+  "Tom Green": "Thomas W Green",
+  "Thomas Green": "Thomas W Green",
+  "Tom Langton": "Tom J Langton",
+  "Timothy Poole": "Tim Poole"
+};
+
+const NICKNAME_MAP = {
+  "tim": "timothy", "tom": "thomas", "will": "william", "bill": "william",
+  "bob": "robert", "rob": "robert", "dick": "richard", "rick": "richard",
+  "dave": "david", "dan": "daniel", "mike": "michael", "chris": "christopher",
+  "matt": "matthew", "andy": "andrew", "sam": "samuel", "ben": "benjamin",
+  "alex": "alexander", "ed": "edward", "ted": "edward", "nick": "nicholas",
+  "jon": "jonathan", "joe": "joseph", "pete": "peter", "phil": "philip",
+  "steve": "stephen", "greg": "gregory", "tony": "anthony", "liz": "elizabeth",
+  "beth": "elizabeth", "kate": "katherine", "katie": "katherine", "meg": "megan",
+  "maggie": "margaret", "becky": "rebecca", "sue": "susan", "jenny": "jennifer"
+};
+
+let allPerformances = [];
+let filteredPerformances = [];
+let manualAliases = {};
+let isAdmin = false;
+let pendingDeleteKeys = [];
+let selectedPerfIds = new Set();
+let lastRenderedPerfKeys = [];
+let lastClickedPerfKey = null;
+let tableSortState = {
+  ringers: { key: "total", dir: -1 },
+  conductors: { key: "total", dir: -1 },
+  towers: { key: "total", dir: -1 },
+  assocs: { key: "total", dir: -1 }
+};
+
+function getPerfUniqueKey(p) {
+  return p.id || computeFingerprint(p);
+}
+
+function sanitizeText(str) {
+  return (str || "").replace(/\u2014|\u2013/g, "-").replace(/\s+/g, " ").trim();
+}
+
+// Normalizes dedication strings for matching variants of the SAME church (e.g. "St Peter's" vs "St Peter")
+// while keeping distinct dedications (St Mary, All Saints, St Peter, Great St Mary, St Bene't, etc.) strictly separate
+function normalizeDedicationKey(ded) {
+  return sanitizeText(ded)
+    .toLowerCase()
+    .replace(/['’]s\b/g, "")
+    .replace(/['’]/g, "")
+    .replace(/\bst\.?\b/g, "saint")
+    .replace(/\bs\.?\b/g, "saint")
+    .replace(/&/g, "and")
+    .replace(/\bthe\b/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+// Repairs/splits any stored record where place/tower/dedication was previously merged or stored in legacy fields
+function normalizePerformanceLocation(raw) {
+  let place = sanitizeText(raw.place || "");
+  let county = sanitizeText(raw.county || "");
+  let dedication = sanitizeText(raw.dedication || raw.towerName || raw.tower || raw.building || raw.address || "");
+
+  // If place contains "Nottingham - St Peter" or "Cambridge, St Bene't" with empty dedication, split them out
+  if (!dedication && place) {
+    const dashMatch = place.match(/^(.+?)\s+-\s+(.+)$/);
+    if (dashMatch) {
+      place = sanitizeText(dashMatch[1]);
+      dedication = sanitizeText(dashMatch[2]);
+    } else if (place.includes(",")) {
+      const parts = place.split(",").map(s => sanitizeText(s)).filter(Boolean);
+      if (parts.length >= 3) {
+        place = parts[0];
+        county = county || parts[1];
+        dedication = parts.slice(2).join(", ");
+      } else if (parts.length === 2) {
+        place = parts[0];
+        dedication = parts[1];
+      }
+    }
+  }
+
+  // If place still has ", County" appended (e.g. "Nottingham, Nottinghamshire"), separate county cleanly
+  if (place.includes(",")) {
+    const pParts = place.split(",").map(s => sanitizeText(s)).filter(Boolean);
+    if (pParts.length >= 2) {
+      place = pParts[0];
+      if (!county) county = pParts.slice(1).join(", ");
+    }
+  }
+
+  // If dedication accidentally repeats the town prefix (e.g. "Nottingham, St Peter" or "Cambridge - St Bene't"), strip duplicate town prefix
+  if (place && dedication) {
+    const escPlace = place.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const dupPrefix = new RegExp(`^${escPlace}\\s*(?:,|-)\\s*(.+)$`, "i");
+    const m = dedication.match(dupPrefix);
+    if (m && m[1]) {
+      dedication = sanitizeText(m[1]);
+    }
+  }
+
+  return { place, county, dedication };
+}
+
+function loadState() {
+  try {
+    const savedAliases = JSON.parse(localStorage.getItem(STORAGE_KEY_ALIASES) || "null");
+    manualAliases = savedAliases ? { ...DEFAULT_ALIASES, ...savedAliases } : { ...DEFAULT_ALIASES };
+  } catch (e) {
+    manualAliases = { ...DEFAULT_ALIASES };
+  }
+
+  let stored = [];
+  try {
+    stored = JSON.parse(localStorage.getItem(STORAGE_KEY_PERFS) || "[]");
+  } catch (e) {
+    stored = [];
+  }
+
+  // Also check legacy storage keys in case user had data stored under v1-v3 before tower separation
+  if (!stored.length) {
+    for (const legacyKey of ["twg_bb_performances_v3", "twg_bb_performances_v2", "twg_bb_performances_v1"]) {
+      try {
+        const legacyData = JSON.parse(localStorage.getItem(legacyKey) || "[]");
+        if (Array.isArray(legacyData) && legacyData.length) {
+          stored = legacyData;
+          break;
+        }
+      } catch (e) {}
+    }
+  }
+
+  const combined = stored.length ? stored : SEED_PERFORMANCES;
+  allPerformances = deduplicatePerformances(combined);
+  savePerformances();
+}
+
+function savePerformances() {
+  try { localStorage.setItem(STORAGE_KEY_PERFS, JSON.stringify(allPerformances)); } catch (e) {}
+  // Cloud write only when Firebase-authenticated Admin is active.
+  writePerformancesToCloud();
+}
+
+function computeFingerprint(p) {
+  const loc = normalizePerformanceLocation(p);
+  const dateStr = (p.date || "").trim().toLowerCase();
+  const placeStr = loc.place.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const dedStr = normalizeDedicationKey(loc.dedication);
+  const chgStr = String(p.changes || 0);
+  const methStr = (p.method || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+  const bandStr = (p.band || []).map(b => (b.name || "").trim().toLowerCase().replace(/[^a-z]/g, "")).sort().join(",");
+  return `${dateStr}|${placeStr}|${dedStr}|${chgStr}|${methStr}|${bandStr}`;
+}
+
+function deduplicatePerformances(list) {
+  const idIndexMap = new Map();
+  const fpIndexMap = new Map();
+  const unique = [];
+
+  for (const raw of list) {
+    const loc = normalizePerformanceLocation(raw);
+    const p = {
+      ...raw,
+      association: sanitizeText(raw.association),
+      place: loc.place,
+      county: loc.county,
+      dedication: loc.dedication,
+      duration: sanitizeText(raw.duration),
+      tenor: sanitizeText(raw.tenor),
+      method: sanitizeText(raw.method),
+      changes: Number(raw.changes) || 0,
+      medium: raw.medium || ((raw.band || []).some(b => String(b.bell).includes("-")) ? "hand" : "tower"),
+      band: (raw.band || []).map(b => ({
+        bell: sanitizeText(String(b.bell || "")),
+        name: sanitizeText(b.name || ""),
+        conductor: Boolean(b.conductor)
+      })),
+      footnotes: (raw.footnotes || []).map(f => sanitizeText(f))
+    };
+
+    const idKey = p.id && !String(p.id).startsWith("bb-seed-") ? String(p.id).trim() : "";
+    const fp = computeFingerprint(p);
+
+    const existingIdx = (idKey && idIndexMap.has(idKey))
+      ? idIndexMap.get(idKey)
+      : (fpIndexMap.has(fp) ? fpIndexMap.get(fp) : undefined);
+
+    if (existingIdx !== undefined) {
+      // Enrich existing entry if the incoming record has county, dedication, association, tenor, or duration
+      const prev = unique[existingIdx];
+      unique[existingIdx] = {
+        ...prev,
+        id: idKey || prev.id,
+        association: prev.association || p.association,
+        place: prev.place || p.place,
+        county: prev.county || p.county,
+        dedication: prev.dedication || p.dedication,
+        duration: prev.duration || p.duration,
+        tenor: prev.tenor || p.tenor,
+        footnotes: prev.footnotes && prev.footnotes.length ? prev.footnotes : p.footnotes
+      };
+      if (idKey) idIndexMap.set(idKey, existingIdx);
+      fpIndexMap.set(fp, existingIdx);
+      continue;
+    }
+
+    const newIdx = unique.length;
+    if (idKey) idIndexMap.set(idKey, newIdx);
+    fpIndexMap.set(fp, newIdx);
+    unique.push(p);
+  }
+  return unique;
+}
+// ... existing code ... -->
+function parseBellBoardXml(rawInput) {
+  const parser = new DOMParser();
+  let doc = parser.parseFromString(rawInput, "text/xml");
+  if (doc.getElementsByTagName("parsererror").length > 0) {
+    doc = parser.parseFromString(rawInput, "text/html");
+  }
+  let perfNodes = Array.from(doc.getElementsByTagName("performance"));
+  if (!perfNodes.length) {
+    perfNodes = Array.from(doc.getElementsByTagName("*")).filter(el => (el.localName || el.nodeName || "").toLowerCase() === "performance");
+  }
+
+  const parsed = [];
+
+  perfNodes.forEach(node => {
+    const id = node.getAttribute("id") || "";
+    const assoc = getFirstTagText(node, ["association"]);
+    const placeNode = Array.from(node.getElementsByTagName("*")).find(el => (el.localName || el.nodeName || "").toLowerCase() === "place") || node.getElementsByTagName("place")[0];
+
+    let place = "", county = "", dedication = "";
+    if (placeNode) {
+      // 1. Extract explicit locality, county and church/tower dedication fields from XML, including dedication-specific tag variants.
+      // First, parse BellBoard's actual XML structure: repeated <place-name type="..."> elements.
+      place = getTypedPlaceName(placeNode, "place");
+      dedication = getTypedPlaceName(placeNode, "dedication");
+      county = getTypedPlaceName(placeNode, "county");
+
+      // Fallbacks for older/alternate XML formats that use plain tags instead of typed place-name.
+      if (!place) place = getFirstTagText(placeNode, ["placename", "town", "locality", "city", "village"]);
+      if (!county) county = getFirstTagText(placeNode, ["county", "region", "shire", "state"]);
+      if (!dedication) dedication = getFirstTagText(placeNode, ["dedication", "place-dedication", "place_dedication", "tower-dedication", "tower_dedication", "church-dedication", "church_dedication", "church-name", "tower-name", "church", "building", "address", "tower", "venue", "site"]);
+
+      // 2. Check attributes on <place> if any fields are missing
+      if (!place) place = placeNode.getAttribute("place-name") || placeNode.getAttribute("town") || placeNode.getAttribute("name") || "";
+      if (!county) county = placeNode.getAttribute("county") || placeNode.getAttribute("region") || "";
+      if (!dedication) dedication = placeNode.getAttribute("dedication") || placeNode.getAttribute("place-dedication") || placeNode.getAttribute("tower-dedication") || placeNode.getAttribute("church-name") || placeNode.getAttribute("tower-name") || placeNode.getAttribute("tower") || placeNode.getAttribute("building") || placeNode.getAttribute("address") || "";
+
+      // 3. Fallback: inspect direct text nodes or full textContent of <place>
+      if (!place) {
+        let directText = "";
+        placeNode.childNodes.forEach(cn => {
+          if (cn.nodeType === 3 && cn.nodeValue && cn.nodeValue.trim()) {
+            directText += " " + cn.nodeValue.trim();
+          }
+        });
+        const rawPlaceText = sanitizeText(directText || placeNode.textContent || "");
+        if (rawPlaceText) {
+          // Handle "Place, County - Dedication" or "Place - Dedication"
+          const dashSplit = rawPlaceText.match(/^(.+?)\s+-\s+(.+)$/);
+          if (dashSplit) {
+            const leftSide = dashSplit[1];
+            if (!dedication) dedication = dashSplit[2];
+            if (leftSide.includes(",")) {
+              const lParts = leftSide.split(",").map(s => s.trim()).filter(Boolean);
+              place = lParts[0] || "";
+              if (!county && lParts.length >= 2) county = lParts.slice(1).join(", ");
+            } else {
+              place = leftSide;
+            }
+          } else if (rawPlaceText.includes(",")) {
+            const parts = rawPlaceText.split(",").map(s => s.trim()).filter(Boolean);
+            place = parts[0] || "";
+            if (parts.length >= 3) {
+              if (!county) county = parts[1] || "";
+              if (!dedication) dedication = parts.slice(2).join(", ");
+            } else if (parts.length === 2) {
+              // Distinguish whether second part is a dedication (e.g. "St Peter", "1, Sunnyside Road") or a county
+              const second = parts[1];
+              if (/^(st\.?\s|saint\s|all\s+saints|holy\s+|christ\s+church|our\s+lady|cathedral|abbey|minster|priory|chapel|\d)/i.test(second)) {
+                if (!dedication) dedication = second;
+              } else if (!county) {
+                county = second;
+              }
+            }
+          } else {
+            place = rawPlaceText;
+          }
+        }
+      }
+    }
+
+    // 4. Fallback check on parent <performance> if county/dedication/building/address are siblings of <place>
+    if (!county) {
+      county = getFirstTagText(node, ["county", "region"]);
+    }
+    if (!dedication) {
+      dedication = getFirstTagText(node, ["dedication", "place-dedication", "place_dedication", "tower-dedication", "tower_dedication", "church-dedication", "church_dedication", "church-name", "tower-name", "building", "address", "tower"]);
+    }
+
+    const loc = normalizePerformanceLocation({ place, county, dedication });
+    place = loc.place;
+    county = loc.county;
+    dedication = loc.dedication;
+
+    const date = getFirstTagText(node, ["date"]);
+    const duration = getFirstTagText(node, ["duration"]);
+    const tenor = getFirstTagText(node, ["tenor"]);
+    const titleNode = Array.from(node.getElementsByTagName("*")).find(el => (el.localName || el.nodeName || "").toLowerCase() === "title") || node;
+    const changesStr = getFirstTagText(titleNode, ["changes"]);
+    const changes = parseInt(changesStr || "0", 10) || 0;
+    const method = getFirstTagText(titleNode, ["method"]) || sanitizeText(titleNode.textContent || "").replace(/^\d+\s+/, "");
+
+    const ringerNodes = Array.from(node.getElementsByTagName("*")).filter(el => (el.localName || el.nodeName || "").toLowerCase() === "ringer");
+    const band = ringerNodes.map(rn => ({
+      bell: rn.getAttribute("bell") || "",
+      name: rn.textContent || "",
+      conductor: rn.getAttribute("conductor") === "true" || rn.hasAttribute("conductor")
+    }));
+
+    const footnoteNodes = Array.from(node.getElementsByTagName("*")).filter(el => (el.localName || el.nodeName || "").toLowerCase() === "footnote");
+    const footnotes = footnoteNodes.map(fn => fn.textContent || "");
+    const medium = band.some(b => String(b.bell).includes("-")) ? "hand" : "tower";
+
+    if (date || method) {
+      parsed.push({
+        id: id ? `bb-${id}` : "",
+        association: assoc,
+        place,
+        county,
+        dedication,
+        date,
+        duration,
+        tenor,
+        changes,
+        method,
+        medium,
+        band,
+        footnotes
+      });
+    }
+  });
+
+  return parsed;
+}
+
+function getFirstTagText(parent, tagNames) {
+  if (!parent) return "";
+  for (const tag of tagNames) {
+    const direct = parent.getElementsByTagName(tag)[0];
+    if (direct && direct.textContent) return sanitizeText(direct.textContent);
+    const wildcard = Array.from(parent.getElementsByTagName("*")).find(
+      el => (el.localName || el.nodeName || "").toLowerCase() === tag.toLowerCase()
+    );
+    if (wildcard && wildcard.textContent) return sanitizeText(wildcard.textContent);
+  }
+  return "";
+}
+
+// BellBoard XML uses repeated <place-name> elements distinguished by type="place",
+// type="dedication" and type="county". Read those typed fields explicitly.
+function getTypedPlaceName(placeNode, type) {
+  if (!placeNode) return "";
+  const nodes = Array.from(placeNode.getElementsByTagName("*"));
+  const match = nodes.find(el =>
+    (el.localName || el.nodeName || "").toLowerCase() === "place-name" &&
+    (el.getAttribute("type") || "").toLowerCase() === type.toLowerCase()
+  );
+  return match ? sanitizeText(match.textContent || "") : "";
+}
+
+function resolveCanonicalName(rawName) {
+  const cleaned = sanitizeText(rawName);
+  if (!cleaned) return "";
+  if (manualAliases[cleaned]) return manualAliases[cleaned];
+
+  const lower = cleaned.toLowerCase();
+  for (const [k, v] of Object.entries(manualAliases)) {
+    if (k.toLowerCase() === lower) return v;
+  }
+
+  const parts = cleaned.split(" ");
+  if (parts.length >= 2) {
+    const first = parts[0].toLowerCase().replace(/\./g, "");
+    const mappedFirst = NICKNAME_MAP[first];
+    if (mappedFirst) {
+      const candidate = [
+        mappedFirst.charAt(0).toUpperCase() + mappedFirst.slice(1),
+        ...parts.slice(1)
+      ].join(" ");
+      if (manualAliases[candidate]) return manualAliases[candidate];
+    }
+  }
+  return cleaned;
+}
+
+function getTowerKey(p) {
+  const place = sanitizeText(p.place);
+  const ded = sanitizeText(p.dedication);
+  const dedKey = normalizeDedicationKey(ded);
+  return `${place.toLowerCase()}||${dedKey}`;
+}
+
+function getTowerLabel(p) {
+  const place = sanitizeText(p.place);
+  const ded = sanitizeText(p.dedication);
+  if (place && ded) return `${place} - ${ded}`;
+  return place || ded || "Unknown Venue";
+}
+
+function getLengthCategory(p) {
+  const ch = Number(p.changes) || 0;
+  if (ch >= 5000) return "peal";
+  if (ch >= 1250) return "qp";
+  return "other";
+}
+
+function getTargetRingerEntry(p) {
+  const targetCanonical = resolveCanonicalName(TARGET_RINGER).toLowerCase();
+  return (p.band || []).find(b => resolveCanonicalName(b.name).toLowerCase() === targetCanonical) || null;
+}
+
+function getStageFromPerformance(p) {
+  const m = (p.method || "").toLowerCase();
+  if (m.includes("maximus") || m.includes("cinques")) return 12;
+  if (m.includes("royal") || m.includes("caters")) return 10;
+  if (m.includes("major") || m.includes("triples")) return 8;
+  if (m.includes("minor") || m.includes("doubles")) return 6;
+  if (m.includes("minimus") || m.includes("singles")) return 4;
+
+  let maxBell = 0;
+  (p.band || []).forEach(b => {
+    const nums = String(b.bell || "").split("-").map(n => parseInt(n, 10)).filter(n => !isNaN(n));
+    nums.forEach(n => { if (n > maxBell) maxBell = n; });
+  });
+  return maxBell || 6;
+}
+
+function parseDurationMinutes(dur) {
+  if (!dur) return 0;
+  let total = 0;
+  const hMatch = dur.match(/(\d+)\s*h/i);
+  const mMatch = dur.match(/(\d+)\s*m/i) || dur.match(/h\s*(\d+)/i);
+  if (hMatch) total += parseInt(hMatch[1], 10) * 60;
+  if (mMatch) total += parseInt(mMatch[1], 10);
+  return total;
+}
+
+function formatDateNice(iso) {
+  if (!iso) return "";
+  const parts = iso.split("-");
+  if (parts.length !== 3) return iso;
+  const d = new Date(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])));
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC"
+  });
+}
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll(".tab-panel").forEach(panel => {
+    panel.classList.toggle("active", panel.id === `tab-${tabName}`);
+  });
+  if (tabName === "towermap") {
+    initTowerMap();
+    if (towerMapInstance) setTimeout(() => towerMapInstance.invalidateSize(), 80);
+  }
+}
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add("open");
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove("open");
+}
+
+function toggleAdminMode() {
+  if (isAdmin) {
+    isAdmin = false; document.body.classList.remove("is-admin");
+    document.getElementById("btnAdminToggle").textContent = "Admin Login";
+    selectedPerfIds.clear(); renderPerformances();
+    if (firebaseAuth && firebaseAuth.currentUser) firebaseAuth.signOut();
+  } else {
+    document.getElementById("adminEmailInput").value = "";
+    document.getElementById("adminPasswordInput").value = "";
+    document.getElementById("adminLoginError").textContent = "";
+    openModal("adminLoginModal"); setTimeout(() => document.getElementById("adminEmailInput").focus(), 50);
+  }
+}
+async function submitAdminLogin() {
+  const email = document.getElementById("adminEmailInput").value.trim();
+  const password = document.getElementById("adminPasswordInput").value;
+  const errEl = document.getElementById("adminLoginError");
+  if (!firebaseAuth) { errEl.textContent = "Firebase is not connected. Reload the page and try again."; return; }
+  try {
+    const credential = await firebaseAuth.signInWithEmailAndPassword(email, password);
+    isAdmin = true; document.body.classList.add("is-admin");
+    document.getElementById("btnAdminToggle").textContent = "Exit Admin";
+    closeModal("adminLoginModal"); renderAliasList(); renderPerformances();
+    // Migrate local performances only if cloud storage has never been initialized.
+    const syncState = await firestoreDb.doc(CLOUD_PERF_STATE_DOC).get();
+    const cloudSnap = await firestoreDb.collection(CLOUD_PERFS_COLLECTION).limit(1).get();
+    if (!syncState.exists && cloudSnap.empty && allPerformances.length) {
+      await writePerformancesToCloud();
+    } else if (!syncState.exists && cloudSnap.empty) {
+      await firestoreDb.doc(CLOUD_PERF_STATE_DOC).set({initialized:true, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      cloudPerfSyncInitialized = true;
+    }
+    await writeAliasesToCloud();
+    setCloudStatus(`Admin connected (${allPerformances.length} performances)`);
+  } catch (err) {
+    errEl.textContent = err.message || "Sign-in failed. Check your email and password.";
+    document.getElementById("adminPasswordInput").style.borderColor = "#b91c1c";
+  }
+}
+
+function populateFilterDropdowns() {
+  const years = new Set();
+  const towersMap = new Map();
+  const assocs = new Set();
+  const ringers = new Set();
+  const conductors = new Set();
+  const bells = new Set();
+  const targetCanonical = resolveCanonicalName(TARGET_RINGER).toLowerCase();
+
+  allPerformances.forEach(p => {
+    if (p.date && p.date.length >= 4) years.add(p.date.slice(0, 4));
+    const tKey = getTowerKey(p);
+    if (!towersMap.has(tKey)) towersMap.set(tKey, getTowerLabel(p));
+    if (p.association) assocs.add(p.association);
+
+    (p.band || []).forEach(b => {
+      const canon = resolveCanonicalName(b.name);
+      if (canon.toLowerCase() === targetCanonical) {
+        if (b.bell) bells.add(String(b.bell));
+      } else if (canon) {
+        ringers.add(canon);
+      }
+      if (b.conductor && canon) conductors.add(canon);
+    });
+  });
+
+  fillSelect("fYear", Array.from(years).sort((a, b) => b.localeCompare(a)), "All years");
+  fillSelectPairs("fTower", Array.from(towersMap.entries()).sort((a, b) => a[1].localeCompare(b[1])), "All towers");
+  fillSelect("fAssoc", Array.from(assocs).sort((a, b) => a.localeCompare(b)), "All associations");
+  fillSelect("fRinger", Array.from(ringers).sort((a, b) => a.localeCompare(b)), "Any ringer");
+  fillSelect("fConductor", Array.from(conductors).sort((a, b) => a.localeCompare(b)), "Any conductor");
+  fillSelect(
+    "fBell",
+    Array.from(bells).sort((a, b) => parseInt(a, 10) - parseInt(b, 10) || a.localeCompare(b)),
+    "Any bell"
+  );
+}
+
+function fillSelect(id, items, defaultLabel) {
+  const sel = document.getElementById(id);
+  const prev = sel.value;
+  sel.innerHTML = `<option value="all">${escapeHtml(defaultLabel)}</option>` +
+    items.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("");
+  if (items.includes(prev)) sel.value = prev;
+}
+
+function fillSelectPairs(id, pairs, defaultLabel) {
+  const sel = document.getElementById(id);
+  const prev = sel.value;
+  sel.innerHTML = `<option value="all">${escapeHtml(defaultLabel)}</option>` +
+    pairs.map(([k, label]) => `<option value="${escapeHtml(k)}">${escapeHtml(label)}</option>`).join("");
+  if (pairs.some(([k]) => k === prev)) sel.value = prev;
+}
+
+function setQuickFilter(filterId, value, targetTab) {
+  const el = document.getElementById(filterId);
+  if (el) {
+    el.value = value;
+    applyFilters();
+    if (targetTab) switchTab(targetTab);
+  }
+}
+
+function clearFilter(filterId) {
+  const el = document.getElementById(filterId);
+  if (!el) return;
+  el.value = el.tagName === "INPUT" ? "" : "all";
+  applyFilters();
+}
+
+function resetAllFilters() {
+  ["fLength", "fType", "fYear", "fTower", "fAssoc", "fRinger", "fConductor", "fBell"].forEach(id => {
+    document.getElementById(id).value = "all";
+  });
+  document.getElementById("fSearch").value = "";
+  applyFilters();
+}
+
+function applyFilters() {
+  const fLength = document.getElementById("fLength").value;
+  const fType = document.getElementById("fType").value;
+  const fYear = document.getElementById("fYear").value;
+  const fTower = document.getElementById("fTower").value;
+  const fAssoc = document.getElementById("fAssoc").value;
+  const fRinger = document.getElementById("fRinger").value;
+  const fConductor = document.getElementById("fConductor").value;
+  const fBell = document.getElementById("fBell").value;
+  const fSearch = document.getElementById("fSearch").value.trim().toLowerCase();
+  const targetCanonical = resolveCanonicalName(TARGET_RINGER).toLowerCase();
+
+  filteredPerformances = allPerformances.filter(p => {
+    if (fLength !== "all" && getLengthCategory(p) !== fLength) return false;
+    if (fType !== "all" && (p.medium || "tower") !== fType) return false;
+    if (fYear !== "all" && !(p.date || "").startsWith(fYear)) return false;
+    if (fTower !== "all" && getTowerKey(p) !== fTower) return false;
+    if (fAssoc !== "all" && (p.association || "") !== fAssoc) return false;
+
+    const bandResolved = (p.band || []).map(b => ({
+      ...b,
+      canon: resolveCanonicalName(b.name)
+    }));
+
+    if (fRinger !== "all" && !bandResolved.some(b => b.canon === fRinger)) return false;
+    if (fConductor !== "all" && !bandResolved.some(b => b.conductor && b.canon === fConductor)) return false;
+    if (fBell !== "all") {
+      const me = bandResolved.find(b => b.canon.toLowerCase() === targetCanonical);
+      if (!me || String(me.bell) !== fBell) return false;
+    }
+
+    if (fSearch) {
+      const hay = [
+        p.association,
+        p.place,
+        p.county,
+        p.dedication,
+        p.method,
+        p.date,
+        ...(p.footnotes || []),
+        ...bandResolved.map(b => b.canon)
+      ].join(" ").toLowerCase();
+      if (!hay.includes(fSearch)) return false;
+    }
+    return true;
+  });
+
+  renderActiveChips();
+  renderKpis();
+  renderOverview();
+  renderPerformances();
+  renderRingersTables();
+  renderTowersAssocTables();
+  renderCirclingMatrix();
+  renderYearCircling();
+}
+
+function renderActiveChips() {
+  const chips = [];
+  const addChip = (id, label) => chips.push(`<span class="chip">${escapeHtml(label)} <button onclick="clearFilter('${id}')" title="Remove filter">&times;</button></span>`);
+
+  const fLength = document.getElementById("fLength").value;
+  if (fLength !== "all") addChip("fLength", `Length: ${fLength.toUpperCase()}`);
+  const fType = document.getElementById("fType").value;
+  if (fType !== "all") addChip("fType", `Type: ${fType === "hand" ? "Handbells" : "Tower Bells"}`);
+  const fYear = document.getElementById("fYear").value;
+  if (fYear !== "all") addChip("fYear", `Year: ${fYear}`);
+  const fTower = document.getElementById("fTower");
+  if (fTower.value !== "all") addChip("fTower", `Tower: ${fTower.options[fTower.selectedIndex]?.text || fTower.value}`);
+  const fAssoc = document.getElementById("fAssoc").value;
+  if (fAssoc !== "all") addChip("fAssoc", `Assoc: ${fAssoc}`);
+  const fRinger = document.getElementById("fRinger").value;
+  if (fRinger !== "all") addChip("fRinger", `Ringer: ${fRinger}`);
+  const fConductor = document.getElementById("fConductor").value;
+  if (fConductor !== "all") addChip("fConductor", `Conductor: ${fConductor}`);
+  const fBell = document.getElementById("fBell").value;
+  if (fBell !== "all") addChip("fBell", `Bell: ${fBell}`);
+  const fSearch = document.getElementById("fSearch").value.trim();
+  if (fSearch) addChip("fSearch", `Search: "${fSearch}"`);
+
+  const wrap = document.getElementById("activeChips");
+  if (chips.length) {
+    wrap.innerHTML = chips.join("") + `<button class="btn btn-sm" onclick="resetAllFilters()">Reset All</button>`;
+  } else {
+    wrap.innerHTML = "";
+  }
+}
+
+function renderKpis() {
+  const total = filteredPerformances.length;
+  let peals = 0, pealsCond = 0, qps = 0, qpsCond = 0, other = 0, condTotal = 0;
+  const towers = new Set();
+  const dates = [];
+
+  filteredPerformances.forEach(p => {
+    const cat = getLengthCategory(p);
+    const me = getTargetRingerEntry(p);
+    const isCond = Boolean(me && me.conductor);
+    if (isCond) condTotal++;
+
+    if (cat === "peal") { peals++; if (isCond) pealsCond++; }
+    else if (cat === "qp") { qps++; if (isCond) qpsCond++; }
+    else { other++; }
+
+    towers.add(getTowerKey(p));
+    if (p.date) dates.push(p.date);
+  });
+
+  dates.sort();
+  document.getElementById("kpiTotal").textContent = total;
+  document.getElementById("kpiDateSpan").textContent = dates.length ? `${dates[0]} to ${dates[dates.length - 1]}` : "-";
+  document.getElementById("kpiPeals").textContent = peals;
+  document.getElementById("kpiPealsCond").textContent = `${pealsCond} conducted`;
+  document.getElementById("kpiQPs").textContent = qps;
+  document.getElementById("kpiQPsCond").textContent = `${qpsCond} conducted`;
+  document.getElementById("kpiConducted").textContent = condTotal;
+  document.getElementById("kpiOtherCount").textContent = `${other} other performances`;
+  document.getElementById("kpiTowers").textContent = towers.size;
+
+  const circledCount = computeTowerCirclingData("all").filter(t => t.circled).length;
+  document.getElementById("kpiCircledCount").textContent = `${circledCount} circled`;
+  document.getElementById("tabPerfCount").textContent = total;
+}
+
+function renderOverview() {
+  const byYear = new Map();
+  filteredPerformances.forEach(p => {
+    const yr = (p.date || "Unknown").slice(0, 4);
+    if (!byYear.has(yr)) byYear.set(yr, { year: yr, total: 0, peals: 0, qps: 0, other: 0, cond: 0 });
+    const row = byYear.get(yr);
+    row.total++;
+    const cat = getLengthCategory(p);
+    if (cat === "peal") row.peals++;
+    else if (cat === "qp") row.qps++;
+    else row.other++;
+    const me = getTargetRingerEntry(p);
+    if (me && me.conductor) row.cond++;
+  });
+
+  const yearRows = Array.from(byYear.values()).sort((a, b) => b.year.localeCompare(a.year));
+  document.querySelector("#tblYears tbody").innerHTML = yearRows.map(r => `
+    <tr>
+      <td><span class="clickable" onclick="setQuickFilter('fYear','${escapeHtml(r.year)}','performances')">${escapeHtml(r.year)}</span></td>
+      <td class="num"><strong>${r.total}</strong></td>
+      <td class="num">${r.peals}</td>
+      <td class="num">${r.qps}</td>
+      <td class="num">${r.other}</td>
+      <td class="num">${r.cond}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="6" style="text-align:center;color:var(--muted);">No matching performances</td></tr>`;
+
+  renderBellRung();
+
+  const recent = [...filteredPerformances].sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 5);
+  document.getElementById("recentPerfList").innerHTML = recent.map(p => buildPerformanceCardHtml(p, false)).join("") ||
+    `<p style="color:var(--muted);margin:0;">No performances match the current filters.</p>`;
+}
+
+function renderBellRung() {
+  const stageSel = document.getElementById("bellStageFilter").value;
+  const stats = new Map();
+
+  filteredPerformances.forEach(p => {
+    if (stageSel !== "all") {
+      const st = getStageFromPerformance(p);
+      const targetSt = parseInt(stageSel, 10);
+      if (st !== targetSt && !(targetSt % 2 === 1 && st === targetSt + 1)) return;
+    }
+    const me = getTargetRingerEntry(p);
+    if (!me || !me.bell) return;
+    const bell = String(me.bell);
+    if (!stats.has(bell)) stats.set(bell, { bell, total: 0, peals: 0, qps: 0, other: 0 });
+    const row = stats.get(bell);
+    row.total++;
+    const cat = getLengthCategory(p);
+    if (cat === "peal") row.peals++;
+    else if (cat === "qp") row.qps++;
+    else row.other++;
+  });
+
+  const rows = Array.from(stats.values()).sort((a, b) => parseInt(a.bell, 10) - parseInt(b.bell, 10) || a.bell.localeCompare(b.bell));
+  const maxTotal = Math.max(1, ...rows.map(r => r.total));
+
+  document.querySelector("#tblBellsOverview tbody").innerHTML = rows.map(r => {
+    const pct = Math.round((r.total / maxTotal) * 100);
+    return `
+      <tr>
+        <td><span class="clickable" onclick="setQuickFilter('fBell','${escapeHtml(r.bell)}','performances')">Bell ${escapeHtml(r.bell)}</span></td>
+        <td class="num"><strong>${r.total}</strong></td>
+        <td class="num">${r.peals}</td>
+        <td class="num">${r.qps}</td>
+        <td class="num">${r.other}</td>
+        <td>
+          <div class="bar-track" title="${r.total} performances">
+            <div class="bar-fill" style="width:${pct}%"></div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("") || `<tr><td colspan="6" style="text-align:center;color:var(--muted);">No data for selected stage</td></tr>`;
+}
+
+function buildPerformanceCardHtml(p, allowSelect) {
+  const key = getPerfUniqueKey(p);
+  const isSelected = selectedPerfIds.has(key);
+  const cat = getLengthCategory(p);
+  const badgeClass = cat === "peal" ? "badge-peal" : (cat === "qp" ? "badge-qp" : "badge-other");
+  const badgeLabel = cat === "peal" ? "Peal" : (cat === "qp" ? "Quarter Peal" : "Other");
+  const tKey = getTowerKey(p);
+  const tLabel = getTowerLabel(p);
+
+  const band = p.band || [];
+  const half = Math.ceil(band.length / 2);
+  const col1 = band.slice(0, half);
+  const col2 = band.slice(half);
+
+  const renderRingerRow = (b) => {
+    const canon = resolveCanonicalName(b.name);
+    const isTarget = canon.toLowerCase() === resolveCanonicalName(TARGET_RINGER).toLowerCase();
+    const condTag = b.conductor ? " <strong>(C)</strong>" : "";
+    const nameHtml = isTarget
+      ? `<span>${escapeHtml(canon)}${condTag}</span>`
+      : `<span class="clickable" onclick="setQuickFilter('fRinger','${escapeHtml(canon)}','performances')">${escapeHtml(canon)}</span>${condTag}`;
+    return `<div class="ringer-row"><span class="ringer-bell">${escapeHtml(b.bell)}</span><span class="ringer-name">${nameHtml}</span></div>`;
+  };
+
+  const bbNumericId = String(p.id || "").replace(/^bb-/, "");
+  const isRealBbId = /^\d+$/.test(bbNumericId);
+
+  return `
+    <div class="perf-card ${isSelected && allowSelect ? "selected" : ""}">
+      <div class="perf-top">
+        <div class="perf-top-left">
+          ${allowSelect && isAdmin ? `<input type="checkbox" class="perf-select-cb" ${isSelected ? "checked" : ""} onclick="handlePerfCheckboxClick(event, '${escapeHtml(key)}')">` : ""}
+          <div>
+            ${p.association ? `<div class="perf-assoc"><span class="clickable" onclick="setQuickFilter('fAssoc','${escapeHtml(p.association)}','performances')">${escapeHtml(p.association)}</span></div>` : ""}
+            <div class="perf-place">
+              <span class="clickable" onclick="setQuickFilter('fTower','${escapeHtml(tKey)}','performances')">${escapeHtml(tLabel)}</span>
+              ${p.county ? `<span style="font-weight:400;color:var(--muted);font-size:14px;"> (${escapeHtml(p.county)})</span>` : ""}
+            </div>
+            <div class="perf-meta">
+              ${escapeHtml(formatDateNice(p.date))}
+              ${p.duration ? ` in ${escapeHtml(p.duration)}` : ""}
+              ${p.tenor ? ` (${escapeHtml(p.tenor)})` : ""}
+            </div>
+          </div>
+        </div>
+        <div class="perf-top-right">
+          <span class="badge ${badgeClass}">${badgeLabel}</span>
+          ${p.medium === "hand" ? `<span class="badge badge-hand">Handbells</span>` : ""}
+          ${isRealBbId ? `<a class="btn btn-sm" href="https://bb.ringingworld.co.uk/view.php?id=${encodeURIComponent(bbNumericId)}" target="_blank" rel="noopener">BellBoard ↗</a>` : ""}
+          ${isAdmin ? `<button class="btn btn-sm btn-delete" onclick="requestDeleteSingle('${escapeHtml(key)}')">Delete</button>` : ""}
+        </div>
+      </div>
+      <div class="perf-method">${p.changes ? `${p.changes} ` : ""}${escapeHtml(p.method)}</div>
+      <div class="perf-band">
+        <div class="ringer-col">${col1.map(renderRingerRow).join("")}</div>
+        <div class="ringer-col">${col2.map(renderRingerRow).join("")}</div>
+      </div>
+      ${(p.footnotes && p.footnotes.length) ? `<div class="perf-footnotes">${p.footnotes.map(f => `<div>${escapeHtml(f)}</div>`).join("")}</div>` : ""}
+    </div>
+  `;
+}
+
+function renderPerformances() {
+  const sortOrder = document.getElementById("sortOrder").value;
+  const sorted = [...filteredPerformances].sort((a, b) => {
+    if (sortOrder === "date-desc") return (b.date || "").localeCompare(a.date || "");
+    if (sortOrder === "date-asc") return (a.date || "").localeCompare(b.date || "");
+    if (sortOrder === "changes-desc") return (b.changes || 0) - (a.changes || 0);
+    if (sortOrder === "changes-asc") return (a.changes || 0) - (b.changes || 0);
+    if (sortOrder === "dur-desc") return parseDurationMinutes(b.duration) - parseDurationMinutes(a.duration);
+    if (sortOrder === "dur-asc") return parseDurationMinutes(a.duration) - parseDurationMinutes(b.duration);
+    return 0;
+  });
+
+  lastRenderedPerfKeys = sorted.map(getPerfUniqueKey);
+  document.getElementById("perfShowingCount").textContent = sorted.length;
+  document.getElementById("perfListContainer").innerHTML = sorted.map(p => buildPerformanceCardHtml(p, true)).join("") ||
+    `<div class="card"><p style="margin:0;color:var(--muted);">No performances match your current filters.</p></div>`;
+
+  updateBulkToolbarState();
+}
+
+function updateBulkToolbarState() {
+  const filteredKeys = lastRenderedPerfKeys;
+  const selectedInFiltered = filteredKeys.filter(k => selectedPerfIds.has(k)).length;
+  const totalSelected = selectedPerfIds.size;
+
+  document.getElementById("bulkFilteredCount").textContent = filteredKeys.length;
+  document.getElementById("bulkTotalDatasetCount").textContent = allPerformances.length;
+  document.getElementById("bulkSelectedBadge").textContent = `${totalSelected} selected`;
+  document.getElementById("bulkDeleteFilteredCount").textContent = filteredKeys.length;
+  document.getElementById("bulkDeleteSelectedCount").textContent = totalSelected;
+
+  const selectAllCb = document.getElementById("bulkSelectAllCb");
+  selectAllCb.checked = filteredKeys.length > 0 && selectedInFiltered === filteredKeys.length;
+  selectAllCb.indeterminate = selectedInFiltered > 0 && selectedInFiltered < filteredKeys.length;
+
+  document.getElementById("btnClearSelection").disabled = totalSelected === 0;
+  document.getElementById("btnDeleteSelected").disabled = totalSelected === 0;
+  document.getElementById("btnDeleteAllFiltered").disabled = filteredKeys.length === 0;
+}
+
+function handlePerfCheckboxClick(event, key) {
+  const checked = event.target.checked;
+  if (event.shiftKey && lastClickedPerfKey && lastRenderedPerfKeys.includes(lastClickedPerfKey)) {
+    const start = lastRenderedPerfKeys.indexOf(lastClickedPerfKey);
+    const end = lastRenderedPerfKeys.indexOf(key);
+    const [lo, hi] = start < end ? [start, end] : [end, start];
+    for (let i = lo; i <= hi; i++) {
+      if (checked) selectedPerfIds.add(lastRenderedPerfKeys[i]);
+      else selectedPerfIds.delete(lastRenderedPerfKeys[i]);
+    }
+  } else {
+    if (checked) selectedPerfIds.add(key);
+    else selectedPerfIds.delete(key);
+  }
+  lastClickedPerfKey = key;
+  renderPerformances();
+}
+
+function toggleSelectAllFiltered(checked) {
+  lastRenderedPerfKeys.forEach(k => {
+    if (checked) selectedPerfIds.add(k);
+    else selectedPerfIds.delete(k);
+  });
+  renderPerformances();
+}
+
+function selectAllDataset() {
+  allPerformances.forEach(p => selectedPerfIds.add(getPerfUniqueKey(p)));
+  renderPerformances();
+}
+
+function clearPerformanceSelection() {
+  selectedPerfIds.clear();
+  renderPerformances();
+}
+
+function requestDeleteSingle(key) {
+  pendingDeleteKeys = [key];
+  openDeleteConfirmModal("Delete Performance", "Are you sure you want to permanently delete this performance?");
+}
+
+function requestDeleteSelected() {
+  if (!selectedPerfIds.size) return;
+  pendingDeleteKeys = Array.from(selectedPerfIds);
+  openDeleteConfirmModal(
+    `Delete ${pendingDeleteKeys.length} Selected Performance(s)`,
+    `Are you sure you want to permanently delete these ${pendingDeleteKeys.length} selected performances?`
+  );
+}
+
+function requestDeleteFiltered() {
+  if (!lastRenderedPerfKeys.length) return;
+  pendingDeleteKeys = [...lastRenderedPerfKeys];
+  openDeleteConfirmModal(
+    `Delete All ${pendingDeleteKeys.length} Filtered Performance(s)`,
+    `Are you sure you want to permanently delete all ${pendingDeleteKeys.length} currently filtered performances?`
+  );
+}
+
+function openDeleteConfirmModal(title, desc) {
+  document.getElementById("deleteModalTitle").textContent = title;
+  document.getElementById("deleteModalDesc").textContent = desc;
+  const keySet = new Set(pendingDeleteKeys);
+  const matches = allPerformances.filter(p => keySet.has(getPerfUniqueKey(p)));
+  document.getElementById("deletePerfSummary").innerHTML = matches.map(p => `
+    <div class="delete-preview-item">
+      <strong>${escapeHtml(p.date)}</strong> — ${escapeHtml(getTowerLabel(p))}: ${p.changes || ""} ${escapeHtml(p.method)}
+    </div>
+  `).join("");
+  openModal("deleteConfirmModal");
+}
+
+function confirmDeletePerformances() {
+  const delSet = new Set(pendingDeleteKeys);
+  allPerformances = allPerformances.filter(p => !delSet.has(getPerfUniqueKey(p)));
+  pendingDeleteKeys.forEach(k => selectedPerfIds.delete(k));
+  pendingDeleteKeys = [];
+  savePerformances();
+  populateFilterDropdowns();
+  applyFilters();
+  closeModal("deleteConfirmModal");
+}
+
+function sortTable(tableKey, colKey) {
+  const st = tableSortState[tableKey];
+  if (st.key === colKey) st.dir *= -1;
+  else {
+    st.key = colKey;
+    st.dir = (colKey === "name" || colKey === "label") ? 1 : -1;
+  }
+  if (tableKey === "ringers" || tableKey === "conductors") renderRingersTables();
+  else renderTowersAssocTables();
+}
+
+function renderRingersTables() {
+  const ringerMap = new Map();
+  const condMap = new Map();
+  const targetCanonical = resolveCanonicalName(TARGET_RINGER).toLowerCase();
+
+  filteredPerformances.forEach(p => {
+    const cat = getLengthCategory(p);
+    (p.band || []).forEach(b => {
+      const canon = resolveCanonicalName(b.name);
+      if (!canon) return;
+
+      if (b.conductor) {
+        if (!condMap.has(canon)) condMap.set(canon, { name: canon, total: 0, peals: 0, qps: 0, other: 0 });
+        const cr = condMap.get(canon);
+        cr.total++;
+        if (cat === "peal") cr.peals++;
+        else if (cat === "qp") cr.qps++;
+        else cr.other++;
+      }
+
+      if (canon.toLowerCase() !== targetCanonical) {
+        if (!ringerMap.has(canon)) ringerMap.set(canon, { name: canon, total: 0, peals: 0, qps: 0, other: 0, cond: 0 });
+        const rr = ringerMap.get(canon);
+        rr.total++;
+        if (cat === "peal") rr.peals++;
+        else if (cat === "qp") rr.qps++;
+        else rr.other++;
+        if (b.conductor) rr.cond++;
+      }
+    });
+  });
+
+  const qR = document.getElementById("searchRingersTbl").value.trim().toLowerCase();
+  const stR = tableSortState.ringers;
+  const rRows = Array.from(ringerMap.values())
+    .filter(r => !qR || r.name.toLowerCase().includes(qR))
+    .sort((a, b) => stR.key === "name" ? a.name.localeCompare(b.name) * stR.dir : (a[stR.key] - b[stR.key]) * stR.dir);
+
+  document.querySelector("#tblRingers tbody").innerHTML = rRows.map(r => `
+    <tr>
+      <td><span class="clickable" onclick="setQuickFilter('fRinger','${escapeHtml(r.name)}','performances')">${escapeHtml(r.name)}</span></td>
+      <td class="num"><strong>${r.total}</strong></td>
+      <td class="num">${r.peals}</td>
+      <td class="num">${r.qps}</td>
+      <td class="num">${r.other}</td>
+      <td class="num">${r.cond}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="6" style="text-align:center;color:var(--muted);">No ringers found</td></tr>`;
+
+  const qC = document.getElementById("searchCondTbl").value.trim().toLowerCase();
+  const stC = tableSortState.conductors;
+  const cRows = Array.from(condMap.values())
+    .filter(c => !qC || c.name.toLowerCase().includes(qC))
+    .sort((a, b) => stC.key === "name" ? a.name.localeCompare(b.name) * stC.dir : (a[stC.key] - b[stC.key]) * stC.dir);
+
+  document.querySelector("#tblConductors tbody").innerHTML = cRows.map(c => `
+    <tr>
+      <td><span class="clickable" onclick="setQuickFilter('fConductor','${escapeHtml(c.name)}','performances')">${escapeHtml(c.name)}</span></td>
+      <td class="num"><strong>${c.total}</strong></td>
+      <td class="num">${c.peals}</td>
+      <td class="num">${c.qps}</td>
+      <td class="num">${c.other}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="5" style="text-align:center;color:var(--muted);">No conductors found</td></tr>`;
+}
+
+function renderTowersAssocTables() {
+  const towerMap = new Map();
+  const assocMap = new Map();
+
+  filteredPerformances.forEach(p => {
+    const cat = getLengthCategory(p);
+    const tKey = getTowerKey(p);
+    if (!towerMap.has(tKey)) {
+      towerMap.set(tKey, { key: tKey, label: getTowerLabel(p), total: 0, peals: 0, qps: 0, other: 0 });
+    }
+    const tr = towerMap.get(tKey);
+    tr.total++;
+    if (cat === "peal") tr.peals++;
+    else if (cat === "qp") tr.qps++;
+    else tr.other++;
+
+    if (p.association) {
+      if (!assocMap.has(p.association)) {
+        assocMap.set(p.association, { name: p.association, total: 0, peals: 0, qps: 0, other: 0 });
+      }
+      const ar = assocMap.get(p.association);
+      ar.total++;
+      if (cat === "peal") ar.peals++;
+      else if (cat === "qp") ar.qps++;
+      else ar.other++;
+    }
+  });
+
+  const qT = document.getElementById("searchTowersTbl").value.trim().toLowerCase();
+  const stT = tableSortState.towers;
+  const tRows = Array.from(towerMap.values())
+    .filter(t => !qT || t.label.toLowerCase().includes(qT))
+    .sort((a, b) => stT.key === "label" ? a.label.localeCompare(b.label) * stT.dir : (a[stT.key] - b[stT.key]) * stT.dir);
+
+  document.querySelector("#tblTowers tbody").innerHTML = tRows.map(t => `
+    <tr>
+      <td><span class="clickable" onclick="setQuickFilter('fTower','${escapeHtml(t.key)}','performances')">${escapeHtml(t.label)}</span></td>
+      <td class="num"><strong>${t.total}</strong></td>
+      <td class="num">${t.peals}</td>
+      <td class="num">${t.qps}</td>
+      <td class="num">${t.other}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="5" style="text-align:center;color:var(--muted);">No towers found</td></tr>`;
+
+  const qA = document.getElementById("searchAssocTbl").value.trim().toLowerCase();
+  const stA = tableSortState.assocs;
+  const aRows = Array.from(assocMap.values())
+    .filter(a => !qA || a.name.toLowerCase().includes(qA))
+    .sort((a, b) => stA.key === "name" ? a.name.localeCompare(b.name) * stA.dir : (a[stA.key] - b[stA.key]) * stA.dir);
+
+  document.querySelector("#tblAssocs tbody").innerHTML = aRows.map(a => `
+    <tr>
+      <td><span class="clickable" onclick="setQuickFilter('fAssoc','${escapeHtml(a.name)}','performances')">${escapeHtml(a.name)}</span></td>
+      <td class="num"><strong>${a.total}</strong></td>
+      <td class="num">${a.peals}</td>
+      <td class="num">${a.qps}</td>
+      <td class="num">${a.other}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="5" style="text-align:center;color:var(--muted);">No associations found</td></tr>`;
+}
+
+function computeTowerCirclingData(scope) {
+  const towers = new Map();
+  filteredPerformances.forEach(p => {
+    if ((p.medium || "tower") !== "tower") return;
+    const cat = getLengthCategory(p);
+    if (scope === "peal" && cat !== "peal") return;
+    if (scope === "qp" && cat !== "qp") return;
+
+    const tKey = getTowerKey(p);
+    if (!towers.has(tKey)) {
+      towers.set(tKey, { key: tKey, label: getTowerLabel(p), maxBells: 6, counts: {}, total: 0 });
+    }
+    const entry = towers.get(tKey);
+    entry.total++;
+    const st = getStageFromPerformance(p);
+    if (st > entry.maxBells) entry.maxBells = st;
+
+    const me = getTargetRingerEntry(p);
+    if (me && me.bell) {
+      const bNum = parseInt(String(me.bell), 10);
+      if (!isNaN(bNum)) {
+        entry.counts[bNum] = (entry.counts[bNum] || 0) + 1;
+        if (bNum > entry.maxBells) entry.maxBells = bNum;
+      }
+    }
+  });
+
+  return Array.from(towers.values()).map(t => {
+    let rungBells = 0;
+    for (let b = 1; b <= t.maxBells; b++) {
+      if ((t.counts[b] || 0) > 0) rungBells++;
+    }
+    return { ...t, rungBells, circled: rungBells === t.maxBells };
+  });
+}
+
+function renderCirclingMatrix() {
+  const scope = document.getElementById("circlingScope").value;
+  const statusFilter = document.getElementById("circlingStatusFilter").value;
+  let rows = computeTowerCirclingData(scope);
+
+  if (statusFilter === "circled") rows = rows.filter(r => r.circled);
+  else if (statusFilter === "uncircled") rows = rows.filter(r => !r.circled);
+
+  rows.sort((a, b) => b.total - a.total || a.label.localeCompare(b.label));
+
+  document.querySelector("#tblCircling tbody").innerHTML = rows.map(r => {
+    let cells = "";
+    for (let b = 1; b <= 12; b++) {
+      if (b > r.maxBells) {
+        cells += `<td class="matrix-cell cell-na">-</td>`;
+      } else {
+        const cnt = r.counts[b] || 0;
+        if (cnt > 0) {
+          cells += `<td class="matrix-cell cell-hit" onclick="filterByTowerAndBell('${escapeHtml(r.key)}','${b}')">${cnt}</td>`;
+        } else {
+          cells += `<td class="matrix-cell cell-miss">0</td>`;
+        }
+      }
+    }
+    return `
+      <tr>
+        <td><span class="clickable" onclick="setQuickFilter('fTower','${escapeHtml(r.key)}','performances')">${escapeHtml(r.label)}</span></td>
+        <td class="num">${r.maxBells}</td>
+        <td class="num">${r.rungBells}/${r.maxBells}</td>
+        <td><span class="badge ${r.circled ? "badge-peal" : "badge-other"}">${r.circled ? "Circled" : "In Progress"}</span></td>
+        ${cells}
+      </tr>
+    `;
+  }).join("") || `<tr><td colspan="16" style="text-align:center;color:var(--muted);">No tower performances match</td></tr>`;
+}
+
+function filterByTowerAndBell(tKey, bell) {
+  document.getElementById("fTower").value = tKey;
+  document.getElementById("fBell").value = bell;
+  applyFilters();
+  switchTab("performances");
+}
+
+function renderYearCircling() {
+  const scope = document.getElementById("yearCircleScope").value;
+  const dayCounts = new Map();
+
+  filteredPerformances.forEach(p => {
+    const cat = getLengthCategory(p);
+    if (scope === "peal" && cat !== "peal") return;
+    if (scope === "qp" && cat !== "qp") return;
+    if (!p.date || p.date.length < 10) return;
+    const mmdd = p.date.slice(5, 10);
+    dayCounts.set(mmdd, (dayCounts.get(mmdd) || 0) + 1);
+  });
+
+  document.getElementById("yearCircleStats").textContent = `${dayCounts.size} / 366 days rung`;
+
+  const months = [
+    ["01", "Jan", 31], ["02", "Feb", 29], ["03", "Mar", 31], ["04", "Apr", 30],
+    ["05", "May", 31], ["06", "Jun", 30], ["07", "Jul", 31], ["08", "Aug", 31],
+    ["09", "Sep", 30], ["10", "Oct", 31], ["11", "Nov", 30], ["12", "Dec", 31]
+  ];
+
+  let html = `<div class="cal-head"></div>`;
+  for (let d = 1; d <= 31; d++) html += `<div class="cal-head">${d}</div>`;
+
+  months.forEach(([mm, name, maxDays]) => {
+    html += `<div class="cal-month">${name}</div>`;
+    for (let d = 1; d <= 31; d++) {
+      if (d > maxDays) {
+        html += `<div class="cal-day invalid"></div>`;
+      } else {
+        const dd = String(d).padStart(2, "0");
+        const key = `${mm}-${dd}`;
+        const cnt = dayCounts.get(key) || 0;
+        const cls = cnt === 0 ? "" : (cnt === 1 ? "hit-1" : (cnt === 2 ? "hit-2" : "hit-3"));
+        const clickAttr = cnt > 0 ? `onclick="filterByMonthDay('${key}')"` : "";
+        html += `<div class="cal-day ${cls}" title="${name} ${d}: ${cnt} performance(s)" ${clickAttr}>${cnt || ""}</div>`;
+      }
+    }
+  });
+
+  document.getElementById("yearCalGrid").innerHTML = html;
+}
+
+function filterByMonthDay(mmdd) {
+  document.getElementById("fSearch").value = `-${mmdd}`;
+  applyFilters();
+  switchTab("performances");
+}
+
+function addManualAlias() {
+  const fromVal = sanitizeText(document.getElementById("aliasFrom").value);
+  const toVal = sanitizeText(document.getElementById("aliasTo").value);
+  if (!fromVal || !toVal || fromVal === toVal) return;
+  manualAliases[fromVal] = toVal;
+  try {
+    localStorage.setItem(STORAGE_KEY_ALIASES, JSON.stringify(manualAliases));
+  } catch (e) {}
+  writeAliasesToCloud();
+  document.getElementById("aliasFrom").value = "";
+  document.getElementById("aliasTo").value = "";
+  renderAliasList();
+  populateFilterDropdowns();
+  applyFilters();
+}
+
+function removeAlias(fromKey) {
+  delete manualAliases[fromKey];
+  try {
+    localStorage.setItem(STORAGE_KEY_ALIASES, JSON.stringify(manualAliases));
+  } catch (e) {}
+  writeAliasesToCloud();
+  renderAliasList();
+  populateFilterDropdowns();
+  applyFilters();
+}
+
+function renderAliasList() {
+  const wrap = document.getElementById("aliasListWrap");
+  if (!wrap) return;
+  wrap.innerHTML = Object.entries(manualAliases).map(([from, to]) => `
+    <span class="chip">${escapeHtml(from)} &rarr; ${escapeHtml(to)} <button onclick="removeAlias('${escapeHtml(from)}')" title="Remove rule">&times;</button></span>
+  `).join("");
+}
+
+function saveManualPerformance() {
+  const date = document.getElementById("mDate").value;
+  const medium = document.getElementById("mMedium").value;
+  const place = sanitizeText(document.getElementById("mPlace").value);
+  const county = sanitizeText(document.getElementById("mCounty").value);
+  const dedication = sanitizeText(document.getElementById("mDedication").value);
+  const tenor = sanitizeText(document.getElementById("mTenor").value);
+  const association = sanitizeText(document.getElementById("mAssoc").value);
+  const duration = sanitizeText(document.getElementById("mDuration").value);
+  const changes = parseInt(document.getElementById("mChanges").value || "0", 10) || 0;
+  const method = sanitizeText(document.getElementById("mMethod").value);
+  const bandLines = document.getElementById("mBand").value.split("\n").map(l => l.trim()).filter(Boolean);
+  const footnotes = document.getElementById("mFootnotes").value.split("\n").map(l => sanitizeText(l)).filter(Boolean);
+
+  if (!date || !place || !method || !bandLines.length) return;
+
+  const band = bandLines.map(line => {
+    const conductor = /\(c\)/i.test(line);
+    const noCond = line.replace(/\(c\)/ig, "").trim();
+    const m = noCond.match(/^([\d-]+)\s+(.+)$/);
+    if (m) return { bell: m[1], name: sanitizeText(m[2]), conductor };
+    return { bell: "", name: sanitizeText(noCond), conductor };
+  });
+
+  const newPerf = {
+    id: `manual-${Date.now()}`,
+    association,
+    place,
+    county,
+    dedication,
+    date,
+    duration,
+    tenor,
+    changes,
+    method,
+    medium,
+    band,
+    footnotes
+  };
+
+  allPerformances = deduplicatePerformances([newPerf, ...allPerformances]);
+  savePerformances();
+  populateFilterDropdowns();
+  applyFilters();
+  closeModal("manualModal");
+}
+
+function handleXmlFileUpload(event) {
+  const files = Array.from(event.target.files || []);
+  if (!files.length) return;
+  let imported = [];
+  let done = 0;
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imported.push(...parseBellBoardXml(String(e.target.result || "")));
+      done++;
+      if (done === files.length) {
+        mergeImportedPerformances(imported);
+        event.target.value = "";
+      }
+    };
+    reader.readAsText(file);
+  });
+}
+
+function importPastedXml() {
+  const raw = document.getElementById("xmlPasteInput").value.trim();
+  if (!raw) return;
+  const imported = parseBellBoardXml(raw);
+  mergeImportedPerformances(imported);
+  document.getElementById("xmlPasteInput").value = "";
+}
+
+function mergeImportedPerformances(imported) {
+  if (!imported.length) return;
+  const before = allPerformances.length;
+  allPerformances = deduplicatePerformances([...allPerformances, ...imported]);
+  savePerformances();
+  populateFilterDropdowns();
+  applyFilters();
+  closeModal("importModal");
+  const added = allPerformances.length - before;
+  document.getElementById("syncStatus").textContent = `Imported (+${added} new, ${allPerformances.length} total)`;
+}
+
+async function syncBellBoard(manualTrigger) {
+  const statusEl = document.getElementById("syncStatus");
+  statusEl.textContent = "Syncing BellBoard...";
+  const targetUrl = "https://bb.ringingworld.co.uk/export.php?fmt=xml&ringer=thomas+w+green&pagesize=2000";
+  const proxies = [
+    targetUrl,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+  ];
+
+  for (const url of proxies) {
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) continue;
+      const text = await resp.text();
+      const parsed = parseBellBoardXml(text);
+      if (parsed.length) {
+        const before = allPerformances.length;
+        allPerformances = deduplicatePerformances([...allPerformances, ...parsed]);
+        savePerformances();
+        populateFilterDropdowns();
+        applyFilters();
+        const added = allPerformances.length - before;
+        statusEl.textContent = `Synced (${allPerformances.length} total)`;
+        if (added > 0) {
+          const banner = document.getElementById("newPerfBanner");
+          document.getElementById("newPerfText").textContent = `${added} new performance(s) synced from BellBoard!`;
+          banner.classList.add("show");
+        }
+        return;
+      }
+    } catch (e) {}
+  }
+
+  statusEl.textContent = manualTrigger ? "Offline / CORS blocked (Use Import XML)" : `Ready (${allPerformances.length} cached)`;
+}
+
+function loadEmailConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem(STORAGE_KEY_EMAIL) || "null");
+    if (cfg) {
+      if (cfg.recipient) document.getElementById("emailRecipient").value = cfg.recipient;
+      if (cfg.interval) document.getElementById("emailInterval").value = cfg.interval;
+      if (cfg.provider) document.getElementById("emailProvider").value = cfg.provider;
+      if (cfg.endpoint) document.getElementById("emailEndpoint").value = cfg.endpoint;
+    }
+  } catch (e) {}
+}
+
+function saveEmailConfig() {
+  const cfg = {
+    recipient: document.getElementById("emailRecipient").value.trim(),
+    interval: document.getElementById("emailInterval").value,
+    provider: document.getElementById("emailProvider").value,
+    endpoint: document.getElementById("emailEndpoint").value.trim()
+  };
+  try {
+    localStorage.setItem(STORAGE_KEY_EMAIL, JSON.stringify(cfg));
+  } catch (e) {}
+  closeModal("emailModal");
+}
+
+function triggerTestEmail() {
+  const recipient = document.getElementById("emailRecipient").value.trim() || "thomaswilliamgreen18@gmail.com";
+  const subject = encodeURIComponent("BellBoard Viewer - Test Alert");
+  const body = encodeURIComponent(`BellBoard Viewer currently tracks ${allPerformances.length} performances for ${TARGET_RINGER}.`);
+  window.open(`mailto:${recipient}?subject=${subject}&body=${body}`, "_blank");
+}
+
+// ----- Embedded Tower Map -----
+let towerMapInstance = null;
+let towerMapLoaded = false;
+let towerMapLoading = false;
+
+function parseCSVRows(csvText) {
+  const rows = [];
+  let row = [], field = '', quoted = false;
+  for (let i = 0; i < csvText.length; i++) {
+    const ch = csvText[i], next = csvText[i + 1];
+    if (quoted) {
+      if (ch === '"' && next === '"') { field += '"'; i++; }
+      else if (ch === '"') quoted = false;
+      else field += ch;
+    } else {
+      if (ch === '"') quoted = true;
+      else if (ch === ',') { row.push(field); field = ''; }
+      else if (ch === '\n') { row.push(field.replace(/\r$/, '')); rows.push(row); row = []; field = ''; }
+      else field += ch;
+    }
+  }
+  if (field.length || row.length) { row.push(field.replace(/\r$/, '')); rows.push(row); }
+  if (!rows.length) return [];
+  const headers = rows.shift().map(h => h.trim().replace(/^\uFEFF/, ''));
+  return rows.filter(r => r.some(v => String(v || '').trim())).map(r => {
+    const obj = {}; headers.forEach((h, i) => obj[h] = (r[i] ?? '').trim()); return obj;
+  });
+}
+
+function makeTowerBellIcon(bellCount) {
+  const supported = ['3', '4', '5', '6', '8', '10', '12', '14', '16'];
+  const bells = String(bellCount || '').trim();
+  if (supported.includes(bells)) {
+    return L.icon({
+      iconUrl: `https://twgreen.uk/bells/towermap/${bells}.png`,
+      iconSize: [36, 36],
+      iconAnchor: [18, 36],
+      popupAnchor: [0, -36]
+    });
+  }
+  return L.divIcon({
+    className: '',
+    html: `<div class="tower-bell-marker">${escapeHtml(bells || '?')}</div>`,
+    iconSize: [38, 38], iconAnchor: [19, 19]
+  });
+}
+
+function initTowerMap() {
+  if (towerMapLoaded || towerMapLoading || !window.L) return;
+  towerMapLoading = true;
+  const status = document.getElementById('towerMapStatus');
+  if (!status) return;
+  status.textContent = 'Loading tower data…';
+  towerMapInstance = L.map('towerMap', { zoomControl: true });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+  }).addTo(towerMapInstance);
+  fetch('./tower_data.csv?updated=' + Date.now(), { cache: 'no-store' })
+    .then(response => { if (!response.ok) throw new Error(`CSV request failed (${response.status})`); return response.text(); })
+    .then(csv => {
+      const towers = parseCSVRows(csv);
+      const bounds = [];
+      towers.forEach(t => {
+        const lat = Number(t.lat), lng = Number(t.lng);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+        const marker = L.marker([lat, lng], { icon: makeTowerBellIcon(t.number_bells) }).addTo(towerMapInstance);
+        const towerName = escapeHtml(t.name || 'Unnamed tower');
+        const dedication = escapeHtml(t.dedication || '');
+        const county = escapeHtml(t.county || '');
+        const doveUrl = /^https?:\/\//i.test(t.dove || '') ? t.dove : '';
+        const title = doveUrl ? `<a class="tower-popup-title" href="${escapeHtml(doveUrl)}" target="_blank" rel="noopener">${towerName}</a>` : `<span class="tower-popup-title">${towerName}</span>`;
+        let popup = `${title}<div class="tower-popup-detail">${dedication}${dedication && county ? ' · ' : ''}${county}</div><div class="tower-popup-detail">${escapeHtml(t.number_bells || '')} bells${t.first_visit ? ' · First visit: ' + escapeHtml(t.first_visit) : ''}</div>`;
+        marker.bindPopup(popup);
+        bounds.push([lat, lng]);
+      });
+      if (bounds.length) towerMapInstance.fitBounds(bounds, { padding: [24, 24], maxZoom: 12 });
+      else towerMapInstance.setView([52.5, -1.5], 6);
+      status.textContent = `Loaded ${bounds.length} tower locations from tower_data.csv.`;
+      towerMapLoaded = true;
+    })
+    .catch(err => { status.textContent = 'Could not load tower_data.csv. Make sure it is committed alongside the viewer. ' + err.message; });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadState();
+  initFirebaseCloud();
+  loadEmailConfig();
+  populateFilterDropdowns();
+  applyFilters();
+  document.getElementById("syncStatus").textContent = `Connecting to cloud (${allPerformances.length} local performances)…`;
+});
+</script>
+</body>
+</html>
